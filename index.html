@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Story of Us | Fiona</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&family=Indie+Flower&display=swap');
+        
+        :root { 
+            --lavender: #f3e5f5; 
+            --soft-purple: #e1bee7; 
+            --accent: #ba68c8; 
+            --bg-dark: #0a0510; 
+            --glow: 0 0 20px rgba(186, 104, 200, 0.7);
+            --yellow-glow: 0 0 25px rgba(255, 235, 59, 0.9);
+            --polaroid-glow: 0 0 35px rgba(186, 104, 200, 0.9), 0 0 15px rgba(243, 229, 245, 0.5);
+            --polaroid-dim: 0 0 10px rgba(0, 0, 0, 0.6);
+        }
+
+        body, html { 
+            margin: 0; padding: 0; min-height: 100%; width: 100%; 
+            background: var(--bg-dark); font-family: 'Poppins', sans-serif; 
+            color: white; overflow-x: hidden; 
+            transition: background 1s ease;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        #canvas-bg { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
+        
+        #film-grain {
+            position: fixed; inset: 0; z-index: 9800; pointer-events: none;
+            background: url('https://www.transparenttextures.com/patterns/stardust.png');
+            opacity: 0.06; display: none;
+        }
+
+        #fade-overlay {
+            position: fixed; inset: 0; background: #0a0510; z-index: 9998;
+            opacity: 0; pointer-events: none; transition: opacity 0.8s ease-in-out;
+        }
+
+        #curtain-container { position: fixed; inset: 0; z-index: 10000; display: flex; overflow: hidden; pointer-events: none; }
+        .curtain-half { 
+            width: 50%; height: 100%; background: #1a1025; 
+            transition: transform 3.5s cubic-bezier(0.25, 1, 0.5, 1); 
+            position: relative; box-shadow: inset 0 0 50px rgba(0,0,0,0.9); 
+            pointer-events: auto;
+        }
+        .curtain-left { border-right: 2px solid var(--accent); transform: translateX(0); }
+        .curtain-right { border-left: 2px solid var(--accent); transform: translateX(0); }
+        .curtain-open .curtain-left { transform: translateX(-100%); }
+        .curtain-open .curtain-right { transform: translateX(100%); }
+        
+        #curtain-content { 
+            position: absolute; top: 50%; left: 50%; 
+            transform: translate(-50%, -50%); z-index: 10001; 
+            text-align: center; width: 100%; 
+            transition: opacity 0.5s ease;
+            pointer-events: auto;
+        }
+
+        .card { 
+            background: rgba(255, 255, 255, 0.08); 
+            backdrop-filter: blur(15px); 
+            border: 2px solid var(--soft-purple); 
+            box-shadow: var(--glow);
+            border-radius: 25px; padding: 30px; 
+            width: 85%; max-width: 420px; 
+            position: absolute; top: 55%; left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center; z-index: 2000; 
+            opacity: 0; display: none; transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+            height: auto; min-height: 200px;
+            box-sizing: border-box;
+            pointer-events: auto;
+        }
+        .card.active { opacity: 1; display: block; }
+
+        .parchment-card { 
+            background: #f4e4bc; 
+            background-image: url('https://www.transparenttextures.com/patterns/pinstriped-suit.png');
+            color: #2b1b17; border: 10px double #8b5a2b; 
+            box-shadow: 0 0 40px rgba(0,0,0,0.6); 
+            min-height: auto; height: auto !important;
+        }
+
+        .pulse { animation: pulseAnim 2s infinite; }
+        @keyframes pulseAnim { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); } }
+        
+        .glow-text { text-shadow: var(--glow); }
+        .yellow-glow { text-shadow: var(--yellow-glow) !important; }
+
+        #lyrics-container { 
+            position: fixed; top: 10%; width: 100%; text-align: center; z-index: 500; pointer-events: none; 
+            transition: top 0.5s ease-in-out, opacity 0.5s;
+        }
+        #lyrics-container.bottom-align {
+            top: unset !important; bottom: 8% !important;
+        }
+        
+        #lyrics-text { 
+            font-family: 'Dancing Script', cursive; font-size: 2rem; 
+            color: #e1bee7; text-shadow: 0 0 15px #ba68c8; 
+            padding: 0 20px; display: inline-block; line-height: 1.4;
+            transition: opacity 0.4s ease-in-out;
+        }
+
+        .flying-envelope-container { 
+            position: fixed; top: 120%; left: 50%; transform: translate(-50%, -50%); 
+            z-index: 10005 !important; display: none; pointer-events: auto;
+        }
+        
+        .envelope-body { 
+            width: 120px; height: 80px; 
+            background: #e4d5b7; 
+            border: 1px solid #c3b091;
+            position: relative; cursor: pointer; 
+            animation: bobbing 2s ease-in-out infinite; 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+            transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+            pointer-events: auto;
+            border-radius: 0; outline: none; padding: 0;
+            display: block; -webkit-appearance: none; appearance: none;
+        }
+        .envelope-body::before { 
+            content: ""; position: absolute; top: 0; left: 0;
+            border-top: 45px solid #dcd0b9; border-left: 59px solid transparent; border-right: 59px solid transparent; 
+        }
+        .envelope-body::after {
+            content: "✦"; position: absolute; top: 32px; left: 50%; transform: translateX(-50%);
+            width: 22px; height: 22px; background: #800c14; border-radius: 50%;
+            color: #ffd700; font-size: 0.7rem; line-height: 22px; text-align: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3); z-index: 10;
+        }
+        .wing { 
+            position: absolute; width: 65px; height: 40px; 
+            background: #fbf8f3; 
+            border: 1px solid #e2d9cc;
+            border-radius: 65% 35% 0 50%; 
+            top: -12px; z-index: -1; 
+            animation: flap 0.38s ease-in-out infinite alternate; 
+            box-shadow: inset -5px -2px 10px rgba(0,0,0,0.05);
+            pointer-events: none;
+        }
+        .wing-left { left: -52px; transform-origin: right; }
+        .wing-right { right: -52px; transform-origin: left; transform: scaleX(-1); }
+
+        @keyframes flap { from { transform: rotate(12deg); } to { transform: rotate(-28deg); } }
+        @keyframes bobbing { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
+
+        #particle-canvas { position: fixed; inset: 0; z-index: 10010; pointer-events: none; display: none; }
+
+        .parallax-lyrics {
+            position: absolute; left: 50%; transform: translateX(-50%);
+            font-family: 'Dancing Script', cursive; font-size: 2.3rem;
+            color: rgba(225, 190, 231, 0.25); text-align: center; width: 85%;
+            z-index: 9100; pointer-events: none; white-space: nowrap;
+            text-shadow: 0 0 8px rgba(186, 104, 200, 0.3);
+        }
+
+        .scatter-photo { 
+            position: fixed; 
+            width: 100px !important; 
+            height: 130px !important; 
+            border: 4px solid #ffffff !important; 
+            z-index: 9500 !important; 
+            opacity: 0; 
+            background: #fff; 
+            transition: opacity 1.5s ease-in-out, transform 1.5s cubic-bezier(0.25, 1, 0.5, 1); 
+            box-shadow: var(--polaroid-glow); 
+            overflow: hidden; 
+            pointer-events: none; 
+            display: block !important;
+        }
+        .scatter-photo img { width: 100% !important; height: 100% !important; object-fit: cover !important; display: block !important; }
+
+        #cinema-gallery { 
+            display: none; width: 100%; position: relative; z-index: 9200; 
+            min-height: 100vh; padding-bottom: 120px; box-sizing: border-box;
+        }
+        #cinema-list {
+            display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; margin: 0 auto;
+        }
+        .cinema-item { 
+            width: 85%; max-width: 440px; margin: 75px auto; 
+            opacity: 0.35; transform: translateY(40px) scale(0.95); transition: 0.8s ease-out; 
+            display: flex; justify-content: center;
+        }
+        .cinema-item.reveal { opacity: 1; transform: translateY(0) scale(1.02); }
+        .cinema-item img { 
+            width: 100%; height: auto; max-width: 440px;
+            border: 11px solid #fff; border-bottom: 55px solid #fff; 
+            box-shadow: var(--polaroid-dim);
+            transition: box-shadow 0.5s ease-in-out;
+            display: block; box-sizing: border-box;
+        }
+        .cinema-item.reveal img { box-shadow: var(--polaroid-glow); }
+
+        .btn { 
+            padding: 13px 35px; border: none; border-radius: 50px; cursor: pointer; font-weight: 600; 
+            background: linear-gradient(45deg, #ba68c8, #9c27b0); color: white; margin-top: 15px; box-shadow: var(--glow);
+            pointer-events: auto;
+        }
+        .centered-action-btn {
+            position: fixed; bottom: 12%; left: 50%; transform: translateX(-50%); 
+            z-index: 9999; width: auto; min-width: 180px; text-align: center;
+        }
+        textarea { width: 100%; padding: 13px; border-radius: 12px; border: 1px solid #ddd; margin-top: 10px; box-sizing: border-box; font-family: 'Poppins'; font-size: 0.95rem; color: #333; }
+    </style>
+</head>
+
+<body>
+    <div id="film-grain"></div>
+    <div id="fade-overlay"></div>
+    <canvas id="canvas-bg"></canvas>
+    <canvas id="particle-canvas"></canvas>
+
+    <div id="lyrics-container"><div id="lyrics-text"></div></div>
+
+    <div id="curtain-container">
+        <div class="curtain-half curtain-left"></div>
+        <div id="curtain-content">
+            <h1 class="glow-text" style="font-family:'Dancing Script'; font-size:3.5rem; color:white;">The Story of Us</h1>
+            <button class="btn pulse" onclick="startExperience()">Enter Memories</button>
+        </div>
+        <div class="curtain-half curtain-right"></div>
+    </div>
+    
+    <div id="flying-env" class="flying-envelope-container">
+        <button class="envelope-body" id="env-body" onclick="dissolveEnvelope()">
+            <div class="wing wing-left"></div>
+            <div class="wing wing-right"></div>
+            <div style="position:absolute; bottom:6px; width:100%; text-align:center; color:#5d4037; font-size:0.6rem; font-weight:bold; font-family:'Indie Flower'; pointer-events:none;">Open Me</div>
+        </button>
+    </div>
+
+    <div class="card" id="main-card">
+        <h1 id="card-title" style="font-family:'Dancing Script'; font-size:2.6rem; color:var(--lavender); margin-bottom:10px;">Hi Fiona</h1>
+        <div id="question-text" style="font-weight:300; margin-bottom:18px; line-height:1.5;"></div>
+        <div id="action-area"></div>
+    </div>
+
+    <div id="cinema-gallery">
+        <div id="cinema-list"></div>
+        <div id="cinema-end" style="text-align:center; padding:100px 20px; display:none;">
+            <h2 class="glow-text" style="font-family:'Dancing Script'; font-size:2.8rem; color:white;">I'll always be rooting for you, Luglog.</h2>
+            <p style="font-family:'Indie Flower'; font-size:1.5rem; color:var(--soft-purple); margin-top:15px;">God bless you always. 💜</p>
+        </div>
+    </div>
+
+    <audio id="music-ligaya"><source src="https://file.garden/afIEksSC83E7LKis/mrld%20-%20Ligaya.mp3" type="audio/mpeg"></audio>
+    <audio id="music-palagi"><source src="https://file.garden/afIEksSC83E7LKis/PALAGI%20-%20TJxKZ%20Version%20OFFICIAL%20LYRIC%20VIDEO.mp3" type="audio/mpeg"></audio>
+    <audio id="sfx-typewriter" loop><source src="https://file.garden/afIEksSC83E7LKis/soundreality-keyboard-typing-fast-381781.mp3" type="audio/mpeg"></audio>
+    <audio id="sfx-shuffling" loop><source src="https://file.garden/afIEksSC83E7LKis/freesound_community-shuffling-book-80736.mp3" type="audio/mpeg"></audio>
+
+    <script>
+        // Exact 84 images list, including corrected long Messenger filenames
+        const images = [
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/1699362045491.jpg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/1699362045491_1.jpg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/1699362437767.jpg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/1699362764318.jpg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/1699362764318_1.jpg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/1699362967118.jpg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/1701784409343.jpg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/1721961385380.jpg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/IMG_20231020_182129_940.jpg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/IMG_20231020_182158_064.jpg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/IMG_20240512_190002_0.jpg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/IMG_20240512_190003_1.jpg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/IMG_20260425_202040_229.jpg",
+            // FIXED: Full Messengerfilenames
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/Messenger_creation_02bfca03-0eaf-42f4-a695-962272720c43.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/Messenger_creation_7a3fbe4c-6272-4ee5-9658-52cafe91b85d.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/Messenger_creation_9d5d058e-cad3-4e7b-8b4c-4ea59024cf2d.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/Messenger_creation_d1a373e8-9a03-4043-93fd-b150a4e69c69.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/Messenger_creation_dff316d8-5598-4afd-b8d8-960b14c04ecc.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/Photoroom-20240726_211127.png",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/Photoroom-20240727_010917.png",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/SNOW_20231107_213054_990.jpg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/SNOW_20231107_213428_118.jpg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/SNOW_20240610_144604_412.jpg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/SNOW_20240610_144727_827.jpg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/Screenshot_20231006-193009.jpg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/Screenshot_20231128-183020_1.jpg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/Screenshot_20231128-183156_1.jpg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/Screenshot_20231228-000649.jpg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/Screenshot_20240101-222237.jpg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/Screenshot_20240101-235713.jpg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/Screenshot_20240313-203330.jpg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/Screenshot_20240401-201954.jpg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/Screenshot_20241222-004316.jpg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/Screenshot_20250624-022805.jpg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/Screenshot_20260428-042848.jpg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/Screenshot_20260428-045748.jpg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/Screenshot_20260428-223454.jpg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_1086509269117640.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_1195673194766353.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_1204085640913960.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_1245368546461975.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_1280551612789498.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_1384845922254056.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_1429094391822049.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_1497987291079107.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_1506852206709770.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_1603715900420644.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_1653380112160894.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_1792175047937255.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_1837559219945652.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_1885459051901211.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_258526913847957.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_2730422220462428.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_2774263856043413.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_2855762364564335.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_314151251651547.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_320072044331575.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_3209804869271617.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_344199148043647.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_345716187979603.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_353457740510165.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_358359423955683.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_366579309489240.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_370213149176398.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_3822165011347076.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_386266007051390.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_560195572886733.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_644368153922849.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_707446544436730.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_734267425488133.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_738622831206124.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_771803248316167.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_773347911364531.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_814144026941198.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_815347966952780.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_903901511116564.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_320748744404478.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_322651064270597.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_327142163452317.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_343124475477975.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_386286543839942.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_3962367364049750.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_404079059347235.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_420039614051569.jpeg",
+            "https://raw.githubusercontent.com/Alexalipio/my-memories/main/received_436220002358467.jpeg"
+        ];
+
+        let curIdx = 0;
+        let starsArr = [];
+        let particlesArr = [];
+        let debrisArr = []; // Realistic Space elements
+        const typeSound = document.getElementById('sfx-typewriter');
+        const shuffleSound = document.getElementById('sfx-shuffling');
+        const ligaya = document.getElementById('music-ligaya');
+
+        function startExperience() {
+            document.getElementById('curtain-content').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('curtain-container').classList.add('curtain-open');
+                ligaya.volume = 0.6;
+                ligaya.play().catch(e => console.log('Ligaya playing'));
+                
+                // FIXED: Set up all stars AND dynamic space objects
+                initHighEndSpaceView();
+                startKaraoke(lyricsLigaya, ligaya);
+
+                setTimeout(() => {
+                    const card = document.getElementById('main-card');
+                    card.style.display = 'block';
+                    card.classList.add('active');
+                    updateDisplay();
+                }, 3800);
+            }, 500);
+        }
+
+        const lyricsLigaya = [
+            { time: 13.6, text: "Sa'kin nakatingin\nParang lumilipad na lang sa hangin" },
+            { time: 24.8, text: "'Di na mapakali\nIkaw lang naman ang ninanais" },
+            { time: 36.8, text: "'Di ba nalilito ang puso mo kung saan na papunta?\nSa akin ba sinta?" },
+            { time: 51.2, text: "Wag mo sanang isipin\nNa parang wala lang sa'kin" },
+            { time: 60.1, text: "Ang lahat nating pinagsamahan\nIsasayaw kita na para bang ito" },
+            { time: 73.5, text: "Na ang panghuli natin sinta\nWag kang mag-alala" },
+            { time: 88.8, text: "'Di kita hahayaang mag-isa\nSasamahan nga kita" },
+            { time: 101.0, text: "Sa dulo ng ligaya\n'Di pa ba halata" },
+            { time: 111.0, text: "Na iba ang ihip ng hangin dito?\nKung pwede lang sabihin" },
+            { time: 119.1, text: "Ng diretsahan ang aking gusto\nTeka ang bulag mo naman" },
+            { time: 127.5, text: "Kung 'di pa rin na sisilayan\nNagbago na ang pagtingin" },
+            { time: 137.5, text: "Wag mo sanang isipin\nNa parang wala lang sa'kin" },
+            { time: 146.1, text: "Ang lahat nating pinagsamahan\nIsasayaw kita na para bang ito" },
+            { time: 159.5, text: "Na ang panghuli natin sinta\nWag kang mag-alala" },
+            { time: 175.1, text: "'Di kita hahayaang mag-isa\nSasamahan nga kita" },
+            { time: 187.3, text: "Sa dulo ng ligaya\nAt ang oras ay tumatakbo" },
+            { time: 202.4, text: "'Di pa rin alam kung gusto mo rin ako\nIsasayaw kita na para bang" },
+            { time: 214.8, text: "Walang nakatingin sa'tin sinta\nWag kang mag-alala" },
+            { time: 228.1, text: "'Di kita hahayaang mag-isa\nSasamahan nga kita" },
+            { time: 241.5, text: "Isasayaw kita na para bang ito\nNa ang panghuli natin sinta" },
+            { time: 256.0, text: "Wag kang mag-alala\n'Di kita hahayaang mag-isa" },
+            { time: 267.5, text: "Sasamahan nga kita\nSa dulo" }
+        ];
+
+        const lyricsPalagi = [
+            { time: 20.0, text: "Hindi man araw-araw na nakangiti\nIlang beses na rin tayong humihindi" },
+            { time: 33.5, text: "'Di na mabilang ang ating mga tampuhan\nAway-bati natin, 'di na namamalayan" },
+            { time: 46.5, text: "Eto tayo\nNgunit sa huli, palagi" },
+            { time: 54.8, text: "Babalik pa rin sa yakap mo\nHanggang sa huli, palagi" },
+            { time: 65.5, text: "Pipiliin kong maging sa 'yo\nUlit-ulitin man" },
+            { time: 74.2, text: "Nais kong malaman mong\nIyo ako oh, palagi" },
+            { time: 92.5, text: "Kung balikan man ang hirap, luha't lahat\nIkaw ang paborito kong desisyon at" },
+            { time: 105.5, text: "'Pag napaligiran ng ingay at ng gulo\n'Di ko 'pagpapalit ngiti mo sa mundo" },
+            { time: 118.0, text: "Oh eto tayo\nSa huli, palagi" },
+            { time: 126.8, text: "Babalik pa rin sa yakap mo\nHanggang sa huli, palagi" },
+            { time: 137.5, text: "Pipiliin kong maging sa 'yo\nUlit-ulitin man" },
+            { time: 146.0, text: "Nais kong malaman mong\nIyo ako oh" },
+            { time: 154.0, text: "Sa pagdating ng ating pilak at ginto\nDiyamante ma'y abutin, ikaw pa rin aking bituin" },
+            { time: 166.5, text: "Natatangi kong dalangin 'gang sa huling siglo\nSa huli, palagi" },
+            { time: 178.0, text: "Babalik pa rin sa yakap mo\nMahal sa huli, palagi" },
+            { time: 188.5, text: "Pipiliin kong maging sa 'yo\nUlit-ulitin man" },
+            { time: 197.0, text: "Nais kong malaman mong\nIyo ako oh, palagi" }
+        ];
+
+        let activeLineIndex = -1;
+
+        function startKaraoke(array, player) {
+            player.ontimeupdate = () => {
+                const cur = player.currentTime;
+                const lineIndex = array.findIndex((l, index) => 
+                    cur >= l.time && (!array[index + 1] || cur < array[index + 1].time)
+                );
+                
+                if (lineIndex !== -1 && lineIndex !== activeLineIndex) {
+                    activeLineIndex = lineIndex;
+                    showLine(array, lineIndex);
+                }
+            };
+        }
+
+        function showLine(array, lineIndex) {
+            const lyricEl = document.getElementById('lyrics-text');
+            const line = array[lineIndex];
+
+            lyricEl.style.opacity = '0';
+            setTimeout(() => {
+                lyricEl.innerHTML = line.text.replace(/\n/g, "<br>");
+                lyricEl.style.opacity = '1';
+            }, 400);
+        }
+
+        function updateDisplay() {
+            const qs = [
+                "Kamusta ka naman ba, Tikol?", 
+                "May naging lesson ba ikaw sa sarili mo after everything that happened?", 
+                "May mga gusto ka bang sabihin sa akin na hindi mo nasabi noon?", 
+                "May mga naging regrets ka ba sa relationship natin before?", 
+                "Daming tanong no, well kamusta naman ba studies mo Nichole?", 
+                "After a long time, sa tingin mo, nag bago ka ba in a good way Larabel?", 
+                "Mas nakilala mo na ba sarili mo ngayon, Tikol?", 
+                "May favorite memories or moments ka pa ba from our past Lara?", 
+                "May mga times ba na nag lo-look back ka pa rin sa past rs natin?"
+            ];
+            const qText = document.getElementById('question-text');
+            const aArea = document.getElementById('action-area');
+            qText.innerHTML = ""; aArea.innerHTML = "";
+            
+            typeEffect(qs[curIdx], 0, () => { 
+                aArea.innerHTML = `<button class="btn pulse" onclick="showInput()">Answer</button>`; 
+            }, 'question-text');
+        }
+
+        function typeEffect(t, i, cb, elId) { 
+            const el = document.getElementById(elId); 
+            if (i === 0) { 
+                typeSound.volume = 0.25; 
+                typeSound.play().catch(e => console.log('Typing')); 
+            }
+            if (i < t.length) { 
+                el.innerHTML += (t.charAt(i) === '\n' ? '<br>' : t.charAt(i)); 
+                setTimeout(() => typeEffect(t, i + 1, cb, elId), 42); 
+            } else { 
+                typeSound.pause(); 
+                if(cb) cb(); 
+            }
+        }
+
+        function showInput() {
+            document.getElementById('action-area').innerHTML = `
+                <textarea id="ans" rows="3" placeholder="Write your hearts out..."></textarea>
+                <button class="btn pulse" style="width:100%; margin-top:12px;" onclick="handleNext()">Submit Answer</button>`;
+            document.getElementById('ans').focus();
+        }
+
+        function handleNext() {
+            const val = document.getElementById('ans').value; 
+            if(!val) return;
+            sendG("Q"+(curIdx+1), val); 
+            curIdx++;
+            if(curIdx < 9) updateDisplay(); else triggerFlyingEnv();
+        }
+
+        function triggerFlyingEnv() {
+            document.getElementById('main-card').style.display = 'none';
+            const env = document.getElementById('flying-env');
+            env.style.display = 'block';
+            setTimeout(() => { 
+                env.style.top = '50%'; 
+                env.style.transition = '1.2s ease-out'; 
+            }, 100);
+        }
+
+        let lsmParticles = [];
+        function dissolveEnvelope() {
+            const envBody = document.getElementById('env-body');
+            envBody.style.pointerEvents = "none";
+            envBody.style.animation = "none";
+            envBody.style.transform = "scale(0.8)";
+            envBody.style.opacity = "0";
+
+            const c = document.getElementById('particle-canvas');
+            const ctx = c.getContext('2d');
+            c.width = window.innerWidth;
+            c.height = window.innerHeight;
+            c.style.display = "block";
+
+            const startX = window.innerWidth / 2;
+            const startY = window.innerHeight / 2;
+
+            for (let i = 0; i < 180; i++) {
+                lsmParticles.push({
+                    x: startX,
+                    y: startY,
+                    vx: (Math.random() - 0.5) * 12,
+                    vy: (Math.random() - 0.5) * 12,
+                    r: Math.random() * 4 + 2,
+                    color: Math.random() > 0.5 ? "#e1bee7" : "#ffd700",
+                    alpha: 1,
+                    life: Math.random() * 40 + 35
+                });
+            }
+
+            function animateDust() {
+                ctx.clearRect(0, 0, c.width, c.height);
+                let alive = false;
+                lsmParticles.forEach(p => {
+                    if (p.life > 0) {
+                        p.x += p.vx;
+                        p.y += p.vy;
+                        p.vx *= 0.96;
+                        p.vy *= 0.96;
+                        p.alpha = p.life / 60;
+                        p.life--;
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                        ctx.fillStyle = p.color;
+                        ctx.globalAlpha = p.alpha;
+                        ctx.fill();
+                        alive = true;
+                    }
+                });
+                if (alive) {
+                    requestAnimationFrame(animateDust);
+                } else {
+                    c.style.display = "none";
+                    showLSM();
+                }
+            }
+            animateDust();
+        }
+
+        function showLSM() {
+            document.getElementById('flying-env').style.display = 'none';
+            const card = document.getElementById('main-card');
+            card.className = "card active parchment-card"; 
+            card.style.display = 'block';
+            card.style.transform = "translate(-50%, -50%) scale(0.9)";
+            card.style.opacity = "0";
+
+            setTimeout(() => {
+                card.style.transform = "translate(-50%, -50%) scale(1)";
+                card.style.opacity = "1";
+            }, 100);
+
+            card.innerHTML = `
+                <div style="padding:5px;">
+                    <h2 class="glow-text" style="font-family:'Dancing Script'; font-size:2.4rem; color:#8b5a2b; margin-bottom:12px;">Hi lovey...</h2>
+                    <div id="lsm-body" style="font-size:1rem; text-align:left; line-height:1.6; font-weight:600; color:#2b1b17; word-wrap: break-word;"></div>
+                    <div id="lsm-action"></div>
+                </div>`;
+
+            const text = `Thankyou, my greatest love Ingat ka palagi, Luglog. Thank you for taking the time to answer these, Gusto ko lang din talaga magbigay ng effort ulit not because gusto ko magpapansin or bumalik sakin yung dati or whatsoever, I considered this as a appreciation lang din dahil marami talaga ako narealize nung hindi na ikaw, iba pa din talaga yung genuine love na naibigay mo sakin non, yung mga care at affection mo na hindi nakakasawa kahit laging masakit ulo mo sakin talagang di nagbabago yung treatment mo sakin, lahat yon bumabalik sakin after these past few days habang nirerecall ko yung mga happenings sa buhay ko bigla ko na compare na anlayo pala talaga ng agwat nila kumpara sayo in every aspects... I’ll love you to infinity and far beyond bwhahahahay and syempre Godbless mwua💜`;
+            
+            typeEffect(text, 0, () => {
+                document.getElementById('lsm-action').innerHTML = `
+                    <p style="font-family:'Indie Flower'; font-weight:bold; margin-top:20px; color:#5d4037; font-size:1.15rem;">What is your wish for yourself, my love?</p>
+                    <input type="text" id="wish-input" style="width:100%; padding:12px; border-radius:8px; border:1px solid #8b5a2b;" placeholder="My wish is...">
+                    <button class="btn pulse" style="width:100%; margin-top:15px;" onclick="saveWish()">Save My Wish</button>`;
+            }, 'lsm-body');
+        }
+        
+        function saveWish() {
+            const w = document.getElementById('wish-input').value; 
+            if(!w) return;
+            sendG("Final Wish", w);
+            document.getElementById('lsm-action').innerHTML = `
+                <p style="font-family:'Indie Flower'; font-size:1.35rem; margin-top:20px; color:#2b1b17; text-align:center; font-weight:bold;">You deserve the world, Nichole.</p>
+                <div class="yellow-glow pulse" style="font-size:4.2rem; cursor:pointer; margin-top:10px; text-align:center; color:#ba68c8;" onclick="transitionToHeart()">🪻</div>
+                <div class="yellow-glow pulse" style="font-family:'Indie Flower'; font-size:1.3rem; font-weight:bold; color:#ba68c8; text-align:center; cursor:pointer;" onclick="transitionToHeart()">Click me</div>`;
+        }
+
+        function transitionToHeart() {
+            document.getElementById('main-card').style.display = 'none';
+            const overlay = document.getElementById('fade-overlay');
+            
+            overlay.style.pointerEvents = "all";
+            overlay.style.opacity = "1";
+            
+            setTimeout(() => {
+                const lyContainer = document.getElementById('lyrics-container');
+                lyContainer.classList.add('bottom-align'); 
+                lyContainer.style.opacity = '1';
+                
+                const palagi = document.getElementById('music-palagi');
+                ligaya.pause(); 
+                palagi.currentTime = 0;
+                palagi.volume = 0.65; 
+                palagi.play().catch(e => console.log('Music playing'));
+                
+                activeLineIndex = -1; 
+                startKaraoke(lyricsPalagi, palagi);
+
+                overlay.style.opacity = "0";
+                overlay.style.pointerEvents = "none";
+                
+                const cX = window.innerWidth / 2, cY = window.innerHeight / 2;
+                shuffleSound.volume = 0.45; 
+                shuffleSound.play().catch(e => console.log('Shuffling audio started'));
+
+                // Binigyan ng fix ang visual render delay at tinaasan ang opacity
+                // Exact interval of 1.5s (1500ms) for each of the 84 photos
+                images.forEach((src, i) => {
+                    setTimeout(() => {
+                        const imgFrame = document.createElement('div'); 
+                        imgFrame.className = 'scatter-photo';
+                        imgFrame.innerHTML = `<img src="${src}" alt="Memory">`;
+                        
+                        document.body.appendChild(imgFrame);
+                        
+                        // Sakto sa eksaktong 84 points para walang gap o blanko sa math ng puso
+                        const t = (i / images.length) * 2 * Math.PI;
+                        const r = window.innerWidth < 500 ? 11.5 : 18; 
+                        const x = r * 16 * Math.pow(Math.sin(t), 3);
+                        const y = -r * (13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
+                        
+                        imgFrame.style.left = (cX + x - 55) + 'px'; 
+                        imgFrame.style.top = (cY + y - 70) + 'px';
+                        
+                        setTimeout(() => {
+                            imgFrame.style.opacity = "1"; 
+                            imgFrame.style.transform = `rotate(${(Math.random() - 0.5) * 20}deg) scale(1)`;
+                        }, 50);
+                    }, i * 1500); 
+                });
+
+                // Spawns action button after 1 second per image has finished
+                // Lalabas ang button 1.5 seconds pagkatapos mailagay ang huling image
+                setTimeout(() => {
+                    const btn = document.createElement('button'); 
+                    btn.className = 'btn pulse centered-action-btn'; 
+                    btn.innerText = "Cinema of Us";
+                    btn.onclick = showGallery; 
+                    document.body.appendChild(btn);
+                }, images.length * 1500 + 1500);
+            }, 800);
+        }
+
+        const backgroundLyrics = [
+            "Hindi man araw-araw na nakangiti",
+            "Away-bati natin, 'di na namamalayan",
+            "Ngunit sa huli, palagi",
+            "Babalik pa rin sa yakap mo",
+            "Pipiliin kong maging sa 'yo",
+            "Ikaw ang paborito kong desisyon",
+            "Di ko pagpapalit ngiti mo sa mundo",
+            "Iyo ako oh, palagi",
+            "Aking bituin, natatangi kong dalangin",
+            "Sa huli, palagi"
+        ];
+
+        function showGallery() {
+            document.getElementById('film-grain').style.display = "block";
+            document.getElementById('cinema-gallery').style.display = "block";
+            document.getElementById('lyrics-container').style.opacity = '1';
+
+            const list = document.getElementById('cinema-list');
+            list.innerHTML = `<h2 class="glow-text" style="text-align:center; font-family:'Dancing Script'; font-size:3.2rem; padding:80px 0 40px 0; color:white;">Cinema of Us</h2>`;
+            
+            images.forEach(s => { 
+                const d = document.createElement('div'); 
+                d.className = 'cinema-item'; 
+                d.innerHTML = `<img src="${s}" alt="Cinema Photo">`; 
+                list.appendChild(d); 
+            });
+            
+            document.getElementById('cinema-end').style.display = "block";
+
+            const totalPageHeight = document.documentElement.scrollHeight;
+            backgroundLyrics.forEach((lyricText, index) => {
+                const pDiv = document.createElement('div');
+                pDiv.className = 'parallax-lyrics';
+                pDiv.innerText = lyricText;
+                
+                const verticalSpot = 500 + (index * ((totalPageHeight - 1200) / backgroundLyrics.length));
+                pDiv.style.top = verticalSpot + 'px';
+                pDiv.setAttribute('data-base-top', verticalSpot);
+                
+                list.appendChild(pDiv);
+            });
+
+            const obs = new IntersectionObserver(ents => {
+                ents.forEach(e => { 
+                    if(e.isIntersecting) {
+                        e.target.classList.add('reveal'); 
+                    } else {
+                        e.target.classList.remove('reveal');
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            document.querySelectorAll('.cinema-item').forEach(it => obs.observe(it));
+            
+            // Tinanggal ang logic na nag-rerelease ng memory frame nang biglaan
+            document.querySelectorAll('.scatter-photo').forEach(p => {
+                p.style.opacity = "0";
+                setTimeout(() => p.remove(), 1000);
+            });
+            
+            if(window.event) window.event.target.remove();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            window.addEventListener('scroll', () => {
+                const sy = window.scrollY;
+                const scrollPct = sy / (document.documentElement.scrollHeight - window.innerHeight);
+                
+                if (scrollPct < 0.33) {
+                    document.body.style.background = "#0a0510";
+                } else if (scrollPct >= 0.33 && scrollPct < 0.66) {
+                    document.body.style.background = "#1b0a24";
+                } else {
+                    document.body.style.background = "#2b0f20";
+                }
+
+                document.querySelectorAll('.parallax-lyrics').forEach(ly => {
+                    const originalTop = parseFloat(ly.getAttribute('data-base-top'));
+                    const movement = (sy * 0.15); 
+                    ly.style.top = (originalTop - movement) + 'px';
+                });
+            });
+        }
+
+        // FIXED: New High-End 2.5D Realistic Outer Space Rendering System
+        function initHighEndSpaceView() {
+            const c = document.getElementById('canvas-bg'), ctx = c.getContext('2d'); 
+            c.width = window.innerWidth; c.height = window.innerHeight;
+
+            // 1. Static Stars (for depth)
+            for(let i=0; i<150; i++) {
+                starsArr.push({ x: Math.random() * c.width, y: Math.random() * c.height, r: Math.random() * 1.6, o: Math.random() });
+            }
+
+            // 2. High-End 2.5D Space Elements List
+            // We use JS-generated texture gradients for realistic look
+            for (let i = 0; i < 45; i++) {
+                debrisArr.push(createSpaceObject(c));
+            }
+
+            // Drawing logic
+            function draw() { 
+                ctx.clearRect(0, 0, c.width, c.height); 
+                
+                // Draw Stars
+                starsArr.forEach(s => { 
+                    ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2); 
+                    ctx.fillStyle = "#fff"; ctx.globalAlpha = s.o; ctx.fill(); 
+                }); 
+
+                // Draw Space Debris/Asteroids/Ships/Station (High End 2.5D)
+                debrisArr.forEach(obj => {
+                    updateSpaceObject(obj, c);
+                    drawRealisticObject(ctx, obj);
+                });
+
+                requestAnimationFrame(draw); 
+            } 
+            draw();
+
+            window.addEventListener('resize', () => {
+                c.width = window.innerWidth;
+                c.height = window.innerHeight;
+            });
+        }
+
+        // JS texture generation factory for space elements
+        function createSpaceObject(canvas) {
+            const types = ['asteroid', 'meteor', 'comet', 'satellite', 'debris', 'ship', 'station'];
+            const type = types[Math.floor(Math.random() * types.length)];
+            const rBase = Math.random();
+            
+            let obj = {
+                type: type,
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                vy: 0,
+                vx: 0,
+                baseR: 0, // Radius or primary size
+                angle: Math.random() * Math.PI * 2,
+                spin: 0,
+                opacity: 0.1 + Math.random() * 0.5,
+                color1: '#fff',
+                color2: '#fff',
+                trail: [] // For meteors/comets
+            };
+
+            switch (type) {
+                case 'asteroid':
+                    obj.baseR = 4 + rBase * 15;
+                    obj.color1 = '#5d4037'; obj.color2 = '#3e2723'; // Dark earthy
+                    obj.vy = 0.2 + Math.random() * 0.4;
+                    obj.spin = (Math.random() - 0.5) * 0.02;
+                    break;
+                case 'meteor':
+                    obj.baseR = 2 + rBase * 3;
+                    obj.color1 = '#fff'; obj.color2 = '#ffd700'; // White gold
+                    obj.vy = 4 + Math.random() * 5; // Fast
+                    obj.vx = -(Math.random() * 1);
+                    obj.trailLength = 15;
+                    break;
+                case 'comet':
+                    obj.baseR = 3 + rBase * 5;
+                    obj.color1 = '#b3e5fc'; obj.color2 = '#0277bd'; // Glowing Blue
+                    obj.vy = 1 + Math.random() * 1.5;
+                    obj.vx = -(0.5 + Math.random() * 0.5);
+                    obj.trailLength = 40;
+                    break;
+                case 'satellite':
+                    obj.baseR = 10 + rBase * 10;
+                    obj.color1 = '#bdc3c7'; obj.color2 = '#2c3e50'; // Metallic/Solar panels
+                    obj.vy = 0.1 + Math.random() * 0.2; // Slow steady
+                    obj.vx = 0.05 + Math.random() * 0.1;
+                    break;
+                case 'debris':
+                    obj.baseR = 3 + rBase * 6;
+                    obj.color1 = '#7f8c8d'; obj.color2 = '#2c3e50'; // Metallic gray
+                    obj.vy = 0.5 + Math.random() * 1;
+                    obj.spin = (Math.random() - 0.5) * 0.05;
+                    break;
+                case 'ship':
+                    obj.baseR = 8 + rBase * 12;
+                    obj.color1 = '#ecf0f1'; obj.color2 = '#c0392b'; // Gray/Red accent
+                    obj.vy = 1.5 + Math.random() * 1;
+                    obj.vx = 0.2;
+                    break;
+                case 'station':
+                    obj.baseR = 25 + rBase * 25; // Large
+                    obj.color1 = '#95a5a6'; obj.color2 = '#34495e'; // Dark metallic complex
+                    obj.vy = 0.05 + Math.random() * 0.1; // Slow drift
+                    obj.angle = Math.PI / 4; // Tilted perspective
+                    break;
+            }
+            return obj;
+        }
+
+        function updateSpaceObject(obj, canvas) {
+            obj.y += obj.vy;
+            obj.x += obj.vx;
+            obj.angle += obj.spin;
+
+            // Tail mechanics for meteors/comets
+            if (obj.trailLength) {
+                obj.trail.push({x: obj.x, y: obj.y});
+                if (obj.trail.length > obj.trailLength) obj.trail.shift();
+            }
+
+            // Reset when leaving screen (recycle objects)
+            if (obj.y > canvas.height + 50 || obj.x > canvas.width + 50 || obj.x < -100) {
+                obj.y = -100;
+                obj.x = Math.random() * canvas.width;
+                if (obj.trail) obj.trail = [];
+            }
+        }
+
+        // Complex realistic 2.5D rendering factory on canvas
+        function drawRealisticObject(ctx, obj) {
+            ctx.globalAlpha = obj.opacity;
+            ctx.save();
+            ctx.translate(obj.x, obj.y);
+            ctx.rotate(obj.angle);
+
+            let grad = ctx.createRadialGradient(0, 0, 0, 0, 0, obj.baseR);
+            grad.addColorStop(0, obj.color1);
+            grad.addColorStop(1, obj.color2);
+            ctx.fillStyle = grad;
+
+            // draw specific high end geometries
+            switch (obj.type) {
+                case 'asteroid':
+                    ctx.beginPath();
+                    // Irregular shape creation
+                    for(let i=0; i<10; i++){
+                        const a = (i/10) * Math.PI * 2;
+                        const r = obj.baseR * (0.8 + Math.random() * 0.4);
+                        ctx.lineTo(r * Math.cos(a), r * Math.sin(a));
+                    }
+                    ctx.closePath();
+                    ctx.fill();
+                    // Metallic shadow accent
+                    ctx.fillStyle = "rgba(0,0,0,0.3)"; ctx.fill();
+                    break;
+                
+                case 'debris':
+                    // Geometric random metallic shapes
+                    ctx.fillRect(-obj.baseR, -obj.baseR/2, obj.baseR*1.5, obj.baseR);
+                    ctx.fillStyle = "rgba(255,255,255,0.1)"; ctx.fillRect(-obj.baseR/2, -obj.baseR/4, obj.baseR/2, obj.baseR/2);
+                    break;
+
+                case 'ship':
+                    // Cockpit/body/wings
+                    ctx.beginPath();
+                    ctx.moveTo(0, -obj.baseR*1.5); // Nose
+                    ctx.lineTo(obj.baseR/2, obj.baseR); // Right Wing
+                    ctx.lineTo(0, obj.baseR/2); // Body
+                    ctx.lineTo(-obj.baseR/2, obj.baseR); // Left Wing
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.fillStyle = obj.color2; ctx.fillRect(-obj.baseR/4, -obj.baseR/2, obj.baseR/2, obj.baseR/4); // Cockpit
+                    break;
+
+                case 'satellite':
+                    // Main body
+                    ctx.fillRect(-obj.baseR/4, -obj.baseR/2, obj.baseR/2, obj.baseR);
+                    // Solar panels (2.5D perspective gradient)
+                    let pGrad = ctx.createLinearGradient(-obj.baseR, 0, obj.baseR, 0);
+                    pGrad.addColorStop(0, '#2980b9'); pGrad.addColorStop(0.5, '#fff'); pGrad.addColorStop(1, '#2980b9');
+                    ctx.fillStyle = pGrad;
+                    ctx.fillRect(-obj.baseR, -obj.baseR/6, obj.baseR*0.7, obj.baseR/3); // Left panel
+                    ctx.fillRect(obj.baseR*0.3, -obj.baseR/6, obj.baseR*0.7, obj.baseR/3); // Right panel
+                    break;
+
+                case 'station':
+                    // Complex modular structure rendering
+                    ctx.fillStyle = obj.color1;
+                    ctx.fillRect(-obj.baseR/2, -obj.baseR/2, obj.baseR, obj.baseR); // Core
+                    ctx.fillStyle = "#fff"; // Windows
+                    ctx.fillRect(-obj.baseR/4, -obj.baseR/4, 2, 2); ctx.fillRect(0, -obj.baseR/4, 2, 2); ctx.fillRect(obj.baseR/4, -obj.baseR/4, 2, 2);
+                    ctx.fillStyle = obj.color2; 
+                    // Spokes/Modules
+                    ctx.fillRect(-obj.baseR, -obj.baseR/10, obj.baseR*2, obj.baseR/5);
+                    ctx.fillRect(-obj.baseR/10, -obj.baseR, obj.baseR/5, obj.baseR*2);
+                    break;
+
+                case 'meteor':
+                case 'comet':
+                    ctx.restore(); // Restore before drawing tail mechanics
+                    // High-End Tail Rendering Factory
+                    if (obj.trail.length > 1) {
+                        for (let t = 0; t < obj.trail.length - 1; t++) {
+                            const p1 = obj.trail[t];
+                            const p2 = obj.trail[t+1];
+                            const pct = t / obj.trail.length;
+                            
+                            ctx.beginPath();
+                            ctx.moveTo(p1.x, p1.y);
+                            ctx.lineTo(p2.x, p2.y);
+                            ctx.lineWidth = obj.baseR * pct * (obj.type === 'comet' ? 3 : 1);
+                            
+                            // Advanced tail gradient factor
+                            let tGrad = ctx.createLinearGradient(p1.x, p1.y, p2.x, p2.y);
+                            tGrad.addColorStop(0, "rgba(0,0,0,0)");
+                            tGrad.addColorStop(1, obj.color2);
+                            ctx.strokeStyle = tGrad;
+                            
+                            ctx.globalAlpha = obj.opacity * pct;
+                            ctx.stroke();
+                        }
+                    }
+                    ctx.save(); // Save again to draw the head
+                    ctx.translate(obj.x, obj.y);
+                    ctx.beginPath();
+                    ctx.arc(0, 0, obj.baseR, 0, Math.PI * 2);
+                    ctx.fillStyle = obj.color1;
+                    ctx.globalAlpha = obj.opacity;
+                    ctx.fill();
+                    break;
+            }
+
+            ctx.restore();
+            ctx.globalAlpha = 1;
+        }
+
+        function sendG(q, a) { 
+            let frame = document.getElementById('silent_frame');
+            if (!frame) {
+                frame = document.createElement('iframe');
+                frame.id = 'silent_frame';
+                frame.name = 'silent_frame';
+                frame.style.display = 'none';
+                document.body.appendChild(frame);
+            }
+
+            const fr = document.createElement('form'); 
+            fr.method = 'POST'; 
+            fr.target = 'silent_frame'; 
+            fr.action = `https://docs.google.com/forms/d/e/1FAIpQLSepORslzrrVdzfBywLMv7rJGZsV1OzJ-inl11tkQf-sABRcNA/formResponse`; 
+            
+            const inp = document.createElement('input'); 
+            inp.name = 'entry.427545367'; 
+            inp.value = `${q}: ${a}`; 
+            
+            fr.appendChild(inp); 
+            document.body.appendChild(fr); 
+            fr.submit(); 
+            fr.remove(); 
+        }
+    </script>
+</body>
+</html>
