@@ -16,6 +16,7 @@
             --yellow-glow: 0 0 25px rgba(255, 235, 59, 0.9);
             --polaroid-glow: 0 0 35px rgba(186, 104, 200, 0.9), 0 0 15px rgba(243, 229, 245, 0.5);
             --polaroid-dim: 0 0 10px rgba(0, 0, 0, 0.6);
+            --lavender-glow: 0 0 20px rgba(230, 208, 235, 0.8), 0 0 30px rgba(186, 104, 200, 0.6);
         }
 
         body, html { 
@@ -28,6 +29,7 @@
         }
 
         #canvas-bg { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
+        #petal-canvas { position: fixed; inset: 0; z-index: 9000; pointer-events: none; display: none; }
         
         #film-grain {
             position: fixed; inset: 0; z-index: 9800; pointer-events: none;
@@ -67,43 +69,108 @@
             box-shadow: var(--glow);
             border-radius: 25px; padding: 30px; 
             width: 85%; max-width: 420px; 
-            position: absolute; top: 55%; left: 50%;
+            position: absolute; top: 58%; left: 50%;
             transform: translate(-50%, -50%);
             text-align: center; z-index: 2000; 
-            opacity: 0; display: none; transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+            opacity: 0; display: none; transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out, top 0.5s ease-in-out;
             height: auto; min-height: 200px;
             box-sizing: border-box;
             pointer-events: auto;
         }
         .card.active { opacity: 1; display: block; }
 
+        /* Parchment Card layout */
         .parchment-card { 
             background: #f4e4bc; 
             background-image: url('https://www.transparenttextures.com/patterns/pinstriped-suit.png');
             color: #2b1b17; border: 10px double #8b5a2b; 
             box-shadow: 0 0 40px rgba(0,0,0,0.6); 
-            min-height: auto; height: auto !important;
+            top: 60%; 
+            width: 88%; max-width: 440px;
+            height: 480px !important;
+            max-height: 480px !important;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            box-sizing: border-box;
+            padding: 25px;
         }
+
+        #lsm-body {
+            font-size: 1.02rem; 
+            text-align: left; 
+            line-height: 1.6; 
+            font-weight: 600; 
+            color: #2b1b17; 
+            word-wrap: break-word;
+            max-height: 250px;
+            overflow-y: auto;
+            padding-right: 8px;
+            margin-bottom: 15px;
+            flex-grow: 1;
+        }
+
+        #lsm-body::-webkit-scrollbar { width: 5px; }
+        #lsm-body::-webkit-scrollbar-thumb { background: #8b5a2b; border-radius: 10px; }
+        #lsm-body::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.05); }
 
         .pulse { animation: pulseAnim 2s infinite; }
         @keyframes pulseAnim { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); } }
         
         .glow-text { text-shadow: var(--glow); }
         .yellow-glow { text-shadow: var(--yellow-glow) !important; }
-
-        #lyrics-container { 
-            position: fixed; top: 10%; width: 100%; text-align: center; z-index: 500; pointer-events: none; 
-            transition: top 0.5s ease-in-out, opacity 0.5s;
+        .lavender-glow-pulse { 
+            color: var(--lavender) !important;
+            text-shadow: var(--lavender-glow);
+            animation: lavenderPulse 2s infinite;
         }
+        @keyframes lavenderPulse {
+            0%, 100% { text-shadow: var(--lavender-glow); opacity: 1; }
+            50% { text-shadow: 0 0 10px rgba(230, 208, 235, 0.4); opacity: 0.8; }
+        }
+
+        /* Adjusted Lyrics Container - Itinaas pa lalo para sa two-line safety */
+        #lyrics-container { 
+            position: fixed; 
+            top: calc(58% - 275px);
+            left: 50%;
+            transform: translateX(-50%);
+            width: 85%; 
+            max-width: 440px;
+            text-align: center; 
+            z-index: 2500; 
+            pointer-events: none; 
+            transition: all 0.5s ease-in-out;
+            opacity: 1;
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         #lyrics-container.bottom-align {
             top: unset !important; bottom: 8% !important;
+            left: 50%; transform: translateX(-50%);
         }
         
         #lyrics-text { 
-            font-family: 'Dancing Script', cursive; font-size: 2rem; 
-            color: #e1bee7; text-shadow: 0 0 15px #ba68c8; 
-            padding: 0 20px; display: inline-block; line-height: 1.4;
-            transition: opacity 0.4s ease-in-out;
+            font-family: 'Dancing Script', cursive; font-size: 1.8rem; 
+            color: rgba(243, 229, 245, 0.3);
+            padding: 0 10px; display: inline-block; line-height: 1.3;
+            transition: opacity 0.6s ease-in-out;
+        }
+
+        .karaoke-word {
+            display: inline-block;
+            color: rgba(243, 229, 245, 0.3);
+            transition: color 1.2s cubic-bezier(0.25, 0.1, 0.25, 1), text-shadow 1.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+            margin-right: 5px;
+            white-space: pre-wrap;
+        }
+        .karaoke-word.active {
+            color: #e1bee7;
+            text-shadow: 0 0 15px #ba68c8, 0 0 25px rgba(186, 104, 200, 0.8);
         }
 
         .flying-envelope-container { 
@@ -151,14 +218,6 @@
 
         #particle-canvas { position: fixed; inset: 0; z-index: 10010; pointer-events: none; display: none; }
 
-        .parallax-lyrics {
-            position: absolute; left: 50%; transform: translateX(-50%);
-            font-family: 'Dancing Script', cursive; font-size: 2.3rem;
-            color: rgba(225, 190, 231, 0.25); text-align: center; width: 85%;
-            z-index: 9100; pointer-events: none; white-space: nowrap;
-            text-shadow: 0 0 8px rgba(186, 104, 200, 0.3);
-        }
-
         .scatter-photo { 
             position: fixed; 
             width: 100px !important; 
@@ -203,9 +262,21 @@
             pointer-events: auto;
         }
         .centered-action-btn {
-            position: fixed; bottom: 12%; left: 50%; transform: translateX(-50%); 
+            position: fixed; 
+            top: 50%; left: 50%;
+            transform: translate(-50%, calc(-50% + 400px)) !important;
+            
             z-index: 9999; width: auto; min-width: 180px; text-align: center;
+            background: linear-gradient(45deg, #ba68c8, #9c27b0); box-shadow: var(--glow);
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
         }
+        
+        @media (max-width: 600px) {
+            .centered-action-btn {
+                transform: translate(-50%, calc(-50% + 280px)) !important;
+            }
+        }
+        
         textarea { width: 100%; padding: 13px; border-radius: 12px; border: 1px solid #ddd; margin-top: 10px; box-sizing: border-box; font-family: 'Poppins'; font-size: 0.95rem; color: #333; }
     </style>
 </head>
@@ -214,6 +285,7 @@
     <div id="film-grain"></div>
     <div id="fade-overlay"></div>
     <canvas id="canvas-bg"></canvas>
+    <canvas id="petal-canvas"></canvas>
     <canvas id="particle-canvas"></canvas>
 
     <div id="lyrics-container"><div id="lyrics-text"></div></div>
@@ -255,8 +327,7 @@
     <audio id="sfx-shuffling" loop><source src="https://file.garden/afIEksSC83E7LKis/freesound_community-shuffling-book-80736.mp3" type="audio/mpeg"></audio>
 
     <script>
-        
-                const images = [
+        const images = [
             "https://raw.githubusercontent.com/alexalipio/my-memories/main/1699362045491.jpg",
             "https://raw.githubusercontent.com/alexalipio/my-memories/main/1699362045491_1.jpg",
             "https://raw.githubusercontent.com/alexalipio/my-memories/main/1699362437767.jpg",
@@ -309,7 +380,7 @@
             "https://raw.githubusercontent.com/alexalipio/my-memories/main/received_1837559219945652.jpeg",
             "https://raw.githubusercontent.com/alexalipio/my-memories/main/received_1885459051901211.jpeg",
             "https://raw.githubusercontent.com/alexalipio/my-memories/main/received_258526913847957.jpeg",
-            "https://raw.githubusercontent.com/alexalipio/my-memories/main/received_273042220462428.jpeg",
+            "https://raw.githubusercontent.com/alexalipio/my-memories/main/received_2730422220462428.jpeg",
             "https://raw.githubusercontent.com/alexalipio/my-memories/main/received_2774263856043413.jpeg",
             "https://raw.githubusercontent.com/alexalipio/my-memories/main/received_2855762364564335.jpeg",
             "https://raw.githubusercontent.com/alexalipio/my-memories/main/received_314151251651547.jpeg",
@@ -342,12 +413,11 @@
             "https://raw.githubusercontent.com/alexalipio/my-memories/main/received_993818495733830.jpeg",
             "https://raw.githubusercontent.com/alexalipio/my-memories/main/retouch_2024121516391686.jpg"
         ];
-        
-            
+
         let curIdx = 0;
         let starsArr = [];
         let particlesArr = [];
-        let debrisArr = []; // Realistic Space elements
+        let debrisArr = [];
         const typeSound = document.getElementById('sfx-typewriter');
         const shuffleSound = document.getElementById('sfx-shuffling');
         const ligaya = document.getElementById('music-ligaya');
@@ -359,7 +429,6 @@
                 ligaya.volume = 0.6;
                 ligaya.play().catch(e => console.log('Ligaya playing'));
                 
-                // FIXED: Set up all stars AND dynamic space objects
                 initHighEndSpaceView();
                 startKaraoke(lyricsLigaya, ligaya);
 
@@ -373,53 +442,90 @@
         }
 
         const lyricsLigaya = [
-            { time: 13.6, text: "Sa'kin nakatingin\nParang lumilipad na lang sa hangin" },
-            { time: 24.8, text: "'Di na mapakali\nIkaw lang naman ang ninanais" },
-            { time: 36.8, text: "'Di ba nalilito ang puso mo kung saan na papunta?\nSa akin ba sinta?" },
-            { time: 51.2, text: "Wag mo sanang isipin\nNa parang wala lang sa'kin" },
-            { time: 60.1, text: "Ang lahat nating pinagsamahan\nIsasayaw kita na para bang ito" },
-            { time: 73.5, text: "Na ang panghuli natin sinta\nWag kang mag-alala" },
-            { time: 88.8, text: "'Di kita hahayaang mag-isa\nSasamahan nga kita" },
-            { time: 101.0, text: "Sa dulo ng ligaya\n'Di pa ba halata" },
-            { time: 111.0, text: "Na iba ang ihip ng hangin dito?\nKung pwede lang sabihin" },
-            { time: 119.1, text: "Ng diretsahan ang aking gusto\nTeka ang bulag mo naman" },
-            { time: 127.5, text: "Kung 'di pa rin na sisilayan\nNagbago na ang pagtingin" },
-            { time: 137.5, text: "Wag mo sanang isipin\nNa parang wala lang sa'kin" },
-            { time: 146.1, text: "Ang lahat nating pinagsamahan\nIsasayaw kita na para bang ito" },
-            { time: 159.5, text: "Na ang panghuli natin sinta\nWag kang mag-alala" },
-            { time: 175.1, text: "'Di kita hahayaang mag-isa\nSasamahan nga kita" },
-            { time: 187.3, text: "Sa dulo ng ligaya\nAt ang oras ay tumatakbo" },
-            { time: 202.4, text: "'Di pa rin alam kung gusto mo rin ako\nIsasayaw kita na para bang" },
-            { time: 214.8, text: "Walang nakatingin sa'tin sinta\nWag kang mag-alala" },
-            { time: 228.1, text: "'Di kita hahayaang mag-isa\nSasamahan nga kita" },
-            { time: 241.5, text: "Isasayaw kita na para bang ito\nNa ang panghuli natin sinta" },
-            { time: 256.0, text: "Wag kang mag-alala\n'Di kita hahayaang mag-isa" },
-            { time: 267.5, text: "Sasamahan nga kita\nSa dulo" }
+            { time: 12, text: "Sa 'kin nakatingin, parang lumilipad na lang sa hangin," },
+            { time: 18, text: "'Di na mapakali 'kaw lang naman ang ninanais" },
+            { time: 25, text: "Di ba nalilito ang puso mo kung" },
+            { time: 29, text: "san na papunta? sa akin ba sinta?" },
+            { time: 37, text: "Huwag mo sanang isipin na parang wala lang" },
+            { time: 42, text: "sa' kin ang lahat na ating pinagsamahan" },
+            { time: 50, text: "Isasayaw kita," },
+            { time: 54, text: "na para bang, ito na ang panghuli" },
+            { time: 60, text: "natin, sinta huwag kang magalala" },
+            { time: 64, text: "di kita hahayaang magisa" },
+            { time: 70, text: "sasamahan nga kita, sa dulo ng ligaya" },
+            { time: 82, text: "Di pa ba halata na iba ang ihip" },
+            { time: 86, text: "ng hangin dito?" },
+            { time: 89, text: "kung pwede lang sabihin ng deretsahan" },
+            { time: 93, text: "ang aking gusto," },
+            { time: 95, text: "at teka ang bulag mo naman" },
+            { time: 97, text: "kung 'di parin nasisilayan" },
+            { time: 101, text: "nagbago na ang pagtingin" },
+            { time: 108, text: "huwag mo sanang isipin" },
+            { time: 111, text: "na parang wala lang sa 'kin" },
+            { time: 114, text: "ang lahat nating pinagsamahan" },
+            { time: 120, text: "Isasayaw kita na para bang" },
+            { time: 127, text: "ito na ang panghuli" },
+            { time: 130, text: "natin, sinta 'wag kang magalala di kita" },
+            { time: 137, text: "hawayang magisa" },
+            { time: 140, text: "sasamahan nga kita sa dulo ng ligaya" },
+            { time: 172, text: "At ang oras ay tumatakbo" },
+            { time: 179, text: "Hindi pa rin alam kung gusto mo rin ako" },
+            { time: 188, text: "isasayaw kita na para bang" },
+            { time: 194, text: "walang nakatingin" },
+            { time: 198, text: "sa 'tin sinta wag kang mag-alala 'di kita" },
+            { time: 204, text: "hahayaang mag-isa" },
+            { time: 208, text: "sasamahan nga kita..." },
+            { time: 213, text: "Isasayaw kita na para bang" },
+            { time: 220, text: "Ito na ang panghuli natin, sinta" },
+            { time: 226, text: "'Wag kang mag-alala," },
+            { time: 228, text: "'di kita hahayaang mag-isa" },
+            { time: 233, text: "Sasamahan nga kita sa dulo..." }
         ];
 
         const lyricsPalagi = [
-            { time: 20.0, text: "Hindi man araw-araw na nakangiti\nIlang beses na rin tayong humihindi" },
-            { time: 33.5, text: "'Di na mabilang ang ating mga tampuhan\nAway-bati natin, 'di na namamalayan" },
-            { time: 46.5, text: "Eto tayo\nNgunit sa huli, palagi" },
-            { time: 54.8, text: "Babalik pa rin sa yakap mo\nHanggang sa huli, palagi" },
-            { time: 65.5, text: "Pipiliin kong maging sa 'yo\nUlit-ulitin man" },
-            { time: 74.2, text: "Nais kong malaman mong\nIyo ako oh, palagi" },
-            { time: 92.5, text: "Kung balikan man ang hirap, luha't lahat\nIkaw ang paborito kong desisyon at" },
-            { time: 105.5, text: "'Pag napaligiran ng ingay at ng gulo\n'Di ko 'pagpapalit ngiti mo sa mundo" },
-            { time: 118.0, text: "Oh eto tayo\nSa huli, palagi" },
-            { time: 126.8, text: "Babalik pa rin sa yakap mo\nHanggang sa huli, palagi" },
-            { time: 137.5, text: "Pipiliin kong maging sa 'yo\nUlit-ulitin man" },
-            { time: 146.0, text: "Nais kong malaman mong\nIyo ako oh" },
-            { time: 154.0, text: "Sa pagdating ng ating pilak at ginto\nDiyamante ma'y abutin, ikaw pa rin aking bituin" },
-            { time: 166.5, text: "Natatangi kong dalangin 'gang sa huling siglo\nSa huli, palagi" },
-            { time: 178.0, text: "Babalik pa rin sa yakap mo\nMahal sa huli, palagi" },
-            { time: 188.5, text: "Pipiliin kong maging sa 'yo\nUlit-ulitin man" },
-            { time: 197.0, text: "Nais kong malaman mong\nIyo ako oh, palagi" }
+            { time: 23, text: "Hindi man araw-araw na nakangiti" },
+            { time: 28, text: "Ilang beses na rin tayong humihindi" },
+            { time: 34, text: "'Di na mabilang ang ating mga tampuhan" },
+            { time: 39, text: "Away-bati natin, 'di na namamalayan" },
+            { time: 47, text: "Heto tayo" },
+            { time: 51, text: "ngunit sa huli palagi" },
+            { time: 58, text: "babalik pa rin sa yakap mo," },
+            { time: 63, text: "hanggang sa huli palagi, pipiliin kong maging sayo" },
+            { time: 75, text: "ulit-ulitin man, nais kong malaman mong" },
+            { time: 82, text: "iyo ako" },
+            { time: 87, text: "palagi" },
+            { time: 100, text: "Kung balikan man ang hirap, luha't lahat" },
+            { time: 106, text: "ikaw ang paborito kong desisyon at" },
+            { time: 111, text: "pag napaligiran ng ingay at ng gulo" },
+            { time: 117, text: "'Di ko 'pagpapalit ngiti mo sa mundo" },
+            { time: 125, text: "heto tayo" },
+            { time: 129, text: "Sa huli palagi" },
+            { time: 137, text: "babalik pa rin sa yakap mo," },
+            { time: 141, text: "hanggang sa huli," },
+            { time: 145, text: "palagi, pipiliin kong maging sayo," },
+            { time: 153, text: "ulit-ulitin man, nais kong malaman mo" },
+            { time: 160, text: "iyo ako" },
+            { time: 167, text: "sa pagdating ng ating pilak at ginto," },
+            { time: 174, text: "diamante may abutin" },
+            { time: 177, text: "ikaw pa rin, aking bituwin" },
+            { time: 180, text: "natatangi kong dalangin" },
+            { time: 183, text: "hanggang sa huling siglo" },
+            { time: 193, text: "sa huli" },
+            { time: 197, text: "palagi" },
+            { time: 201, text: "babalik pa rin sa yakap mo," },
+            { time: 206, text: "mahal sa huli palagi" },
+            { time: 214, text: "pipiliin kong maging sayo," },
+            { time: 220, text: "ulit-ulitin man, nais kong malaman mong" },
+            { time: 226, text: "iyo ako," },
+            { time: 235, text: "palagi" }
         ];
 
         let activeLineIndex = -1;
+        let karaokeInterval = null;
 
         function startKaraoke(array, player) {
+            if(karaokeInterval) clearInterval(karaokeInterval);
+
             player.ontimeupdate = () => {
                 const cur = player.currentTime;
                 const lineIndex = array.findIndex((l, index) => 
@@ -428,20 +534,38 @@
                 
                 if (lineIndex !== -1 && lineIndex !== activeLineIndex) {
                     activeLineIndex = lineIndex;
-                    showLine(array, lineIndex);
+                    renderKaraokeLine(array[lineIndex].text);
                 }
             };
         }
 
-        function showLine(array, lineIndex) {
-            const lyricEl = document.getElementById('lyrics-text');
-            const line = array[lineIndex];
+        function renderKaraokeLine(text) {
+            const container = document.getElementById('lyrics-text');
+            container.style.opacity = '0';
 
-            lyricEl.style.opacity = '0';
             setTimeout(() => {
-                lyricEl.innerHTML = line.text.replace(/\n/g, "<br>");
-                lyricEl.style.opacity = '1';
-            }, 400);
+                container.innerHTML = "";
+                const words = text.split(" ");
+                
+                words.forEach((word) => {
+                    const span = document.createElement('span');
+                    span.className = 'karaoke-word';
+                    span.innerText = word + " ";
+                    container.appendChild(span);
+                });
+
+                container.style.opacity = '1';
+
+                const wordElements = container.querySelectorAll('.karaoke-word');
+                if(wordElements.length > 0) {
+                    const delayPerWord = Math.min(320, 3200 / wordElements.length);
+                    wordElements.forEach((el, i) => {
+                        setTimeout(() => {
+                            el.classList.add('active');
+                        }, i * delayPerWord);
+                    });
+                }
+            }, 600);
         }
 
         function updateDisplay() {
@@ -473,6 +597,11 @@
             }
             if (i < t.length) { 
                 el.innerHTML += (t.charAt(i) === '\n' ? '<br>' : t.charAt(i)); 
+                
+                if (elId === 'lsm-body') {
+                    el.scrollTop = el.scrollHeight;
+                }
+
                 setTimeout(() => typeEffect(t, i + 1, cb, elId), 42); 
             } else { 
                 typeSound.pause(); 
@@ -497,6 +626,7 @@
 
         function triggerFlyingEnv() {
             document.getElementById('main-card').style.display = 'none';
+            document.getElementById('lyrics-container').style.opacity = '0'; 
             const env = document.getElementById('flying-env');
             env.style.display = 'block';
             setTimeout(() => { 
@@ -566,6 +696,11 @@
 
         function showLSM() {
             document.getElementById('flying-env').style.display = 'none';
+
+            const lyricsCont = document.getElementById('lyrics-container');
+            lyricsCont.style.display = 'flex';
+            lyricsCont.style.opacity = '1';
+
             const card = document.getElementById('main-card');
             card.className = "card active parchment-card"; 
             card.style.display = 'block';
@@ -578,19 +713,19 @@
             }, 100);
 
             card.innerHTML = `
-                <div style="padding:5px;">
-                    <h2 class="glow-text" style="font-family:'Dancing Script'; font-size:2.4rem; color:#8b5a2b; margin-bottom:12px;">Hi lovey...</h2>
-                    <div id="lsm-body" style="font-size:1rem; text-align:left; line-height:1.6; font-weight:600; color:#2b1b17; word-wrap: break-word;"></div>
-                    <div id="lsm-action"></div>
+                <div style="display: flex; flex-direction: column; height: 100%; justify-content: space-between; box-sizing: border-box;">
+                    <h2 class="glow-text" style="font-family:'Dancing Script'; font-size:2.2rem; color:#8b5a2b; margin: 0 0 10px 0; flex-shrink: 0; text-align:center;">Hi lovey...</h2>
+                    <div id="lsm-body"></div>
+                    <div id="lsm-action" style="flex-shrink: 0;"></div>
                 </div>`;
 
             const text = `Thankyou, my greatest love Ingat ka palagi, Luglog. Thank you for taking the time to answer these, Gusto ko lang din talaga magbigay ng effort ulit not because gusto ko magpapansin or bumalik sakin yung dati or whatsoever, I considered this as a appreciation lang din dahil marami talaga ako narealize nung hindi na ikaw, iba pa din talaga yung genuine love na naibigay mo sakin non, yung mga care at affection mo na hindi nakakasawa kahit laging masakit ulo mo sakin talagang di nagbabago yung treatment mo sakin, lahat yon bumabalik sakin after these past few days habang nirerecall ko yung mga happenings sa buhay ko bigla ko na compare na anlayo pala talaga ng agwat nila kumpara sayo in every aspects... I’ll love you to infinity and far beyond bwhahahahay and syempre Godbless mwua💜`;
             
             typeEffect(text, 0, () => {
                 document.getElementById('lsm-action').innerHTML = `
-                    <p style="font-family:'Indie Flower'; font-weight:bold; margin-top:20px; color:#5d4037; font-size:1.15rem;">What is your wish for yourself, my love?</p>
-                    <input type="text" id="wish-input" style="width:100%; padding:12px; border-radius:8px; border:1px solid #8b5a2b;" placeholder="My wish is...">
-                    <button class="btn pulse" style="width:100%; margin-top:15px;" onclick="saveWish()">Save My Wish</button>`;
+                    <p style="font-family:'Indie Flower'; font-weight:bold; margin-top:5px; color:#5d4037; font-size:1.1rem; margin-bottom: 5px; text-align:center;">What is your wish for yourself, my love?</p>
+                    <input type="text" id="wish-input" style="width:100%; padding:8px; border-radius:8px; border:1px solid #8b5a2b; box-sizing: border-box;" placeholder="My wish is...">
+                    <button class="btn pulse" style="width:100%; margin-top:8px;" onclick="saveWish()">Save My Wish</button>`;
             }, 'lsm-body');
         }
         
@@ -599,25 +734,231 @@
             if(!w) return;
             sendG("Final Wish", w);
             document.getElementById('lsm-action').innerHTML = `
-                <p style="font-family:'Indie Flower'; font-size:1.35rem; margin-top:20px; color:#2b1b17; text-align:center; font-weight:bold;">You deserve the world, Nichole.</p>
-                <div class="yellow-glow pulse" style="font-size:4.2rem; cursor:pointer; margin-top:10px; text-align:center; color:#ba68c8;" onclick="transitionToHeart()">🪻</div>
-                <div class="yellow-glow pulse" style="font-family:'Indie Flower'; font-size:1.3rem; font-weight:bold; color:#ba68c8; text-align:center; cursor:pointer;" onclick="transitionToHeart()">Click me</div>`;
+                <p style="font-family:'Indie Flower'; font-size:1.35rem; margin-top:10px; color:#2b1b17; text-align:center; font-weight:bold; margin-bottom: 0;">You deserve the world, Nichole.</p>
+                <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 10px; margin-top: 5px;">
+                    <span class="yellow-glow pulse" style="font-size:2.8rem; cursor:pointer; color:#ba68c8;" onclick="transitionToHeart()">🪻</span>
+                    <span class="yellow-glow pulse" style="font-family:'Indie Flower'; font-size:1.2rem; font-weight:bold; color:#ba68c8; cursor:pointer;" onclick="transitionToHeart()">Click me</span>
+                </div>`;
+        }
+
+        let visualElements = [];
+        let petalCanvas, pCtx;
+
+        function startLavenderPetalsSystem() {
+            petalCanvas = document.getElementById('petal-canvas');
+            pCtx = petalCanvas.getContext('2d');
+            petalCanvas.width = window.innerWidth;
+            petalCanvas.height = window.innerHeight;
+            petalCanvas.style.display = "block";
+            visualElements = [];
+
+            const colors = ['#C8A2C8', '#E6E6FA', '#F3E5F5', '#F8BBD0', '#E1BEE7'];
+
+            for (let i = 0; i < 45; i++) {
+                visualElements.push(createPetal(colors));
+            }
+            for (let i = 0; i < 35; i++) {
+                visualElements.push(createSpark());
+            }
+            for (let i = 0; i < 15; i++) {
+                visualElements.push(createBokeh());
+            }
+            for (let i = 0; i < 3; i++) {
+                visualElements.push(createButterfly());
+            }
+
+            function animateVisuals() {
+                pCtx.clearRect(0, 0, petalCanvas.width, petalCanvas.height);
+                
+                visualElements.forEach(el => {
+                    if (el.type === 'petal') updatePetal(el);
+                    else if (el.type === 'spark') updateSpark(el);
+                    else if (el.type === 'bokeh') updateBokeh(el);
+                    else if (el.type === 'butterfly') updateButterfly(el);
+                    
+                    drawElement(pCtx, el);
+                });
+
+                requestAnimationFrame(animateVisuals);
+            }
+            animateVisuals();
+        }
+
+        function createPetal(colors) {
+            const z = Math.random();
+            return {
+                type: 'petal',
+                x: Math.random() * window.innerWidth,
+                y: window.innerHeight + 20 + Math.random() * 200,
+                z: z,
+                r: 5 + z * 12,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                vy: -0.8 - z * 1.5,
+                sway: Math.random() * 100,
+                swaySpeed: 0.01 + Math.random() * 0.02,
+                angle: Math.random() * 360,
+                spin: (Math.random() - 0.5) * 2,
+                opacity: 0.3 + z * 0.6
+            };
+        }
+
+        function updatePetal(p) {
+            p.y += p.vy;
+            p.sway += p.swaySpeed;
+            p.x += Math.sin(p.sway) * 0.5;
+            p.angle += p.spin;
+            if (p.y < -50) {
+                p.y = window.innerHeight + 50;
+                p.x = Math.random() * window.innerWidth;
+            }
+        }
+
+        function createSpark() {
+            return {
+                type: 'spark',
+                x: Math.random() * window.innerWidth,
+                y: window.innerHeight + Math.random() * 50,
+                r: Math.random() * 2.5 + 1.2,
+                vy: -0.4 - Math.random() * 0.8,
+                opacity: 0.2 + Math.random() * 0.6,
+                fadeSpeed: 0.003 + Math.random() * 0.005,
+                glow: Math.random() * 10 + 5
+            };
+        }
+
+        function updateSpark(s) {
+            s.y += s.vy;
+            s.opacity -= s.fadeSpeed;
+            if (s.opacity <= 0 || s.y < -10) {
+                s.y = window.innerHeight + 10;
+                s.x = Math.random() * window.innerWidth;
+                s.opacity = 0.6 + Math.random() * 0.4;
+            }
+        }
+
+        function createBokeh() {
+            const z = Math.random();
+            return {
+                type: 'bokeh',
+                x: Math.random() * window.innerWidth,
+                y: window.innerHeight + Math.random() * 300,
+                r: 25 + z * 50,
+                vy: -0.2 - z * 0.4,
+                blur: 8 + z * 18,
+                opacity: 0.05 + z * 0.12
+            };
+        }
+
+        function updateBokeh(b) {
+            b.y += b.vy;
+            if (b.y < -100) {
+                b.y = window.innerHeight + 100;
+                b.x = Math.random() * window.innerWidth;
+            }
+        }
+
+        function createButterfly() {
+            return {
+                type: 'butterfly',
+                x: -50 - Math.random() * 200,
+                y: window.innerHeight * 0.3 + Math.random() * 350,
+                vy: (Math.random() - 0.5) * 0.4,
+                vx: 0.6 + Math.random() * 0.6,
+                flap: Math.random() * Math.PI * 2,
+                flapSpeed: 0.15 + Math.random() * 0.1,
+                size: 8 + Math.random() * 6,
+                opacity: 0.5 + Math.random() * 0.4
+            };
+        }
+
+        function updateButterfly(b) {
+            b.x += b.vx;
+            b.y += b.vy;
+            b.flap += b.flapSpeed;
+            if (b.x > window.innerWidth + 100) {
+                b.x = -100;
+                b.y = window.innerHeight * 0.3 + Math.random() * 350;
+            }
+        }
+
+        function drawElement(ctx, el) {
+            ctx.save();
+            ctx.globalAlpha = el.opacity;
+
+            if (el.type === 'petal') {
+                ctx.translate(el.x, el.y);
+                ctx.rotate(el.angle * Math.PI / 180);
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.bezierCurveTo(-el.r, -el.r * 2, el.r, -el.r * 2, 0, 0);
+                ctx.fillStyle = el.color;
+                ctx.fill();
+            } 
+            else if (el.type === 'spark') {
+                ctx.beginPath();
+                ctx.arc(el.x, el.y, el.r, 0, Math.PI * 2);
+                ctx.fillStyle = '#f3e5f5';
+                ctx.shadowColor = '#ba68c8';
+                ctx.shadowBlur = el.glow;
+                ctx.fill();
+            } 
+            else if (el.type === 'bokeh') {
+                ctx.beginPath();
+                ctx.arc(el.x, el.y, el.r, 0, Math.PI * 2);
+                ctx.fillStyle = '#e1bee7';
+                ctx.shadowColor = '#ba68c8';
+                ctx.shadowBlur = el.blur;
+                ctx.fill();
+            } 
+            else if (el.type === 'butterfly') {
+                ctx.translate(el.x, el.y);
+                const wingSway = Math.sin(el.flap) * 0.8;
+                ctx.fillStyle = '#ba68c8';
+                
+                ctx.beginPath();
+                ctx.ellipse(-3, 0, el.size * Math.abs(wingSway), el.size, Math.PI/4, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.beginPath();
+                ctx.ellipse(3, 0, el.size * Math.abs(wingSway), el.size, -Math.PI/4, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            ctx.restore();
         }
 
         function transitionToHeart() {
+            ligaya.ontimeupdate = null; 
+            if(karaokeInterval) clearInterval(karaokeInterval);
+            
+            const lyContainer = document.getElementById('lyrics-container');
+            lyContainer.style.opacity = '0';
+            
+            // Fade out the old audio completely
+            let vol = ligaya.volume;
+            let fadeOutTimer = setInterval(() => {
+                if (vol > 0.05) {
+                    vol -= 0.05;
+                    ligaya.volume = vol;
+                } else {
+                    clearInterval(fadeOutTimer);
+                    ligaya.pause();
+                }
+            }, 50);
+
             document.getElementById('main-card').style.display = 'none';
             const overlay = document.getElementById('fade-overlay');
             
             overlay.style.pointerEvents = "all";
             overlay.style.opacity = "1";
             
+            startLavenderPetalsSystem();
+            
             setTimeout(() => {
-                const lyContainer = document.getElementById('lyrics-container');
-                lyContainer.classList.add('bottom-align'); 
-                lyContainer.style.opacity = '1';
+                document.getElementById('lyrics-text').innerHTML = ""; 
+                lyContainer.className = 'bottom-align';
                 
                 const palagi = document.getElementById('music-palagi');
-                ligaya.pause(); 
                 palagi.currentTime = 0;
                 palagi.volume = 0.65; 
                 palagi.play().catch(e => console.log('Music playing'));
@@ -627,13 +968,12 @@
 
                 overlay.style.opacity = "0";
                 overlay.style.pointerEvents = "none";
+                lyContainer.style.opacity = '1';
                 
                 const cX = window.innerWidth / 2, cY = window.innerHeight / 2;
                 shuffleSound.volume = 0.45; 
                 shuffleSound.play().catch(e => console.log('Shuffling audio started'));
 
-                // Binigyan ng fix ang visual render delay at tinaasan ang opacity
-                // Exact interval of 1.5s (1500ms) for each of the 84 photos
                 images.forEach((src, i) => {
                     setTimeout(() => {
                         const imgFrame = document.createElement('div'); 
@@ -642,7 +982,6 @@
                         
                         document.body.appendChild(imgFrame);
                         
-                        // Sakto sa eksaktong 84 points para walang gap o blanko sa math ng puso
                         const t = (i / images.length) * 2 * Math.PI;
                         const r = window.innerWidth < 500 ? 11.5 : 18; 
                         const x = r * 16 * Math.pow(Math.sin(t), 3);
@@ -658,10 +997,9 @@
                     }, i * 1500); 
                 });
 
-                // Spawns action button after 1 second per image has finished
-                // Lalabas ang button 1.5 seconds pagkatapos mailagay ang huling image
                 setTimeout(() => {
                     const btn = document.createElement('button'); 
+                    btn.id = "cinema-gallery-btn"; 
                     btn.className = 'btn pulse centered-action-btn'; 
                     btn.innerText = "Cinema of Us";
                     btn.onclick = showGallery; 
@@ -670,26 +1008,14 @@
             }, 800);
         }
 
-        const backgroundLyrics = [
-            "Hindi man araw-araw na nakangiti",
-            "Away-bati natin, 'di na namamalayan",
-            "Ngunit sa huli, palagi",
-            "Babalik pa rin sa yakap mo",
-            "Pipiliin kong maging sa 'yo",
-            "Ikaw ang paborito kong desisyon",
-            "Di ko pagpapalit ngiti mo sa mundo",
-            "Iyo ako oh, palagi",
-            "Aking bituin, natatangi kong dalangin",
-            "Sa huli, palagi"
-        ];
-
         function showGallery() {
             document.getElementById('film-grain').style.display = "block";
             document.getElementById('cinema-gallery').style.display = "block";
             document.getElementById('lyrics-container').style.opacity = '1';
 
             const list = document.getElementById('cinema-list');
-            list.innerHTML = `<h2 class="glow-text" style="text-align:center; font-family:'Dancing Script'; font-size:3.2rem; padding:80px 0 40px 0; color:white;">Cinema of Us</h2>`;
+            
+            list.innerHTML = `<h2 class="lavender-glow-pulse" style="text-align:center; font-family:'Dancing Script'; font-size:3.2rem; padding:80px 0 40px 0; margin: 0;">Cinema of Us</h2>`;
             
             images.forEach(s => { 
                 const d = document.createElement('div'); 
@@ -699,19 +1025,6 @@
             });
             
             document.getElementById('cinema-end').style.display = "block";
-
-            const totalPageHeight = document.documentElement.scrollHeight;
-            backgroundLyrics.forEach((lyricText, index) => {
-                const pDiv = document.createElement('div');
-                pDiv.className = 'parallax-lyrics';
-                pDiv.innerText = lyricText;
-                
-                const verticalSpot = 500 + (index * ((totalPageHeight - 1200) / backgroundLyrics.length));
-                pDiv.style.top = verticalSpot + 'px';
-                pDiv.setAttribute('data-base-top', verticalSpot);
-                
-                list.appendChild(pDiv);
-            });
 
             const obs = new IntersectionObserver(ents => {
                 ents.forEach(e => { 
@@ -725,13 +1038,14 @@
 
             document.querySelectorAll('.cinema-item').forEach(it => obs.observe(it));
             
-            // Tinanggal ang logic na nag-rerelease ng memory frame nang biglaan
             document.querySelectorAll('.scatter-photo').forEach(p => {
                 p.style.opacity = "0";
                 setTimeout(() => p.remove(), 1000);
             });
             
-            if(window.event) window.event.target.remove();
+            const btn = document.getElementById('cinema-gallery-btn');
+            if(btn) btn.remove();
+            
             window.scrollTo({ top: 0, behavior: 'smooth' });
 
             window.addEventListener('scroll', () => {
@@ -745,42 +1059,29 @@
                 } else {
                     document.body.style.background = "#2b0f20";
                 }
-
-                document.querySelectorAll('.parallax-lyrics').forEach(ly => {
-                    const originalTop = parseFloat(ly.getAttribute('data-base-top'));
-                    const movement = (sy * 0.15); 
-                    ly.style.top = (originalTop - movement) + 'px';
-                });
             });
         }
 
-        // FIXED: New High-End 2.5D Realistic Outer Space Rendering System
         function initHighEndSpaceView() {
             const c = document.getElementById('canvas-bg'), ctx = c.getContext('2d'); 
             c.width = window.innerWidth; c.height = window.innerHeight;
 
-            // 1. Static Stars (for depth)
             for(let i=0; i<150; i++) {
                 starsArr.push({ x: Math.random() * c.width, y: Math.random() * c.height, r: Math.random() * 1.6, o: Math.random() });
             }
 
-            // 2. High-End 2.5D Space Elements List
-            // We use JS-generated texture gradients for realistic look
             for (let i = 0; i < 45; i++) {
                 debrisArr.push(createSpaceObject(c));
             }
 
-            // Drawing logic
             function draw() { 
                 ctx.clearRect(0, 0, c.width, c.height); 
                 
-                // Draw Stars
                 starsArr.forEach(s => { 
                     ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2); 
                     ctx.fillStyle = "#fff"; ctx.globalAlpha = s.o; ctx.fill(); 
                 }); 
 
-                // Draw Space Debris/Asteroids/Ships/Station (High End 2.5D)
                 debrisArr.forEach(obj => {
                     updateSpaceObject(obj, c);
                     drawRealisticObject(ctx, obj);
@@ -793,10 +1094,13 @@
             window.addEventListener('resize', () => {
                 c.width = window.innerWidth;
                 c.height = window.innerHeight;
+                if(petalCanvas) {
+                    petalCanvas.width = window.innerWidth;
+                    petalCanvas.height = window.innerHeight;
+                }
             });
         }
 
-        // JS texture generation factory for space elements
         function createSpaceObject(canvas) {
             const types = ['asteroid', 'meteor', 'comet', 'satellite', 'debris', 'ship', 'station'];
             const type = types[Math.floor(Math.random() * types.length)];
@@ -808,59 +1112,59 @@
                 y: Math.random() * canvas.height,
                 vy: 0,
                 vx: 0,
-                baseR: 0, // Radius or primary size
+                baseR: 0, 
                 angle: Math.random() * Math.PI * 2,
                 spin: 0,
                 opacity: 0.1 + Math.random() * 0.5,
                 color1: '#fff',
                 color2: '#fff',
-                trail: [] // For meteors/comets
+                trail: [] 
             };
 
             switch (type) {
                 case 'asteroid':
                     obj.baseR = 4 + rBase * 15;
-                    obj.color1 = '#5d4037'; obj.color2 = '#3e2723'; // Dark earthy
+                    obj.color1 = '#5d4037'; obj.color2 = '#3e2723';
                     obj.vy = 0.2 + Math.random() * 0.4;
                     obj.spin = (Math.random() - 0.5) * 0.02;
                     break;
                 case 'meteor':
                     obj.baseR = 2 + rBase * 3;
-                    obj.color1 = '#fff'; obj.color2 = '#ffd700'; // White gold
-                    obj.vy = 4 + Math.random() * 5; // Fast
+                    obj.color1 = '#fff'; obj.color2 = '#ffd700';
+                    obj.vy = 4 + Math.random() * 5; 
                     obj.vx = -(Math.random() * 1);
                     obj.trailLength = 15;
                     break;
                 case 'comet':
                     obj.baseR = 3 + rBase * 5;
-                    obj.color1 = '#b3e5fc'; obj.color2 = '#0277bd'; // Glowing Blue
+                    obj.color1 = '#b3e5fc'; obj.color2 = '#0277bd';
                     obj.vy = 1 + Math.random() * 1.5;
                     obj.vx = -(0.5 + Math.random() * 0.5);
                     obj.trailLength = 40;
                     break;
                 case 'satellite':
                     obj.baseR = 10 + rBase * 10;
-                    obj.color1 = '#bdc3c7'; obj.color2 = '#2c3e50'; // Metallic/Solar panels
-                    obj.vy = 0.1 + Math.random() * 0.2; // Slow steady
+                    obj.color1 = '#bdc3c7'; obj.color2 = '#2c3e50';
+                    obj.vy = 0.1 + Math.random() * 0.2; 
                     obj.vx = 0.05 + Math.random() * 0.1;
                     break;
                 case 'debris':
                     obj.baseR = 3 + rBase * 6;
-                    obj.color1 = '#7f8c8d'; obj.color2 = '#2c3e50'; // Metallic gray
+                    obj.color1 = '#7f8c8d'; obj.color2 = '#2c3e50';
                     obj.vy = 0.5 + Math.random() * 1;
                     obj.spin = (Math.random() - 0.5) * 0.05;
                     break;
                 case 'ship':
                     obj.baseR = 8 + rBase * 12;
-                    obj.color1 = '#ecf0f1'; obj.color2 = '#c0392b'; // Gray/Red accent
+                    obj.color1 = '#ecf0f1'; obj.color2 = '#c0392b';
                     obj.vy = 1.5 + Math.random() * 1;
                     obj.vx = 0.2;
                     break;
                 case 'station':
-                    obj.baseR = 25 + rBase * 25; // Large
-                    obj.color1 = '#95a5a6'; obj.color2 = '#34495e'; // Dark metallic complex
-                    obj.vy = 0.05 + Math.random() * 0.1; // Slow drift
-                    obj.angle = Math.PI / 4; // Tilted perspective
+                    obj.baseR = 25 + rBase * 25;
+                    obj.color1 = '#95a5a6'; obj.color2 = '#34495e';
+                    obj.vy = 0.05 + Math.random() * 0.1;
+                    obj.angle = Math.PI / 4;
                     break;
             }
             return obj;
@@ -871,13 +1175,11 @@
             obj.x += obj.vx;
             obj.angle += obj.spin;
 
-            // Tail mechanics for meteors/comets
             if (obj.trailLength) {
                 obj.trail.push({x: obj.x, y: obj.y});
                 if (obj.trail.length > obj.trailLength) obj.trail.shift();
             }
 
-            // Reset when leaving screen (recycle objects)
             if (obj.y > canvas.height + 50 || obj.x > canvas.width + 50 || obj.x < -100) {
                 obj.y = -100;
                 obj.x = Math.random() * canvas.width;
@@ -885,7 +1187,6 @@
             }
         }
 
-        // Complex realistic 2.5D rendering factory on canvas
         function drawRealisticObject(ctx, obj) {
             ctx.globalAlpha = obj.opacity;
             ctx.save();
@@ -897,11 +1198,9 @@
             grad.addColorStop(1, obj.color2);
             ctx.fillStyle = grad;
 
-            // draw specific high end geometries
             switch (obj.type) {
                 case 'asteroid':
                     ctx.beginPath();
-                    // Irregular shape creation
                     for(let i=0; i<10; i++){
                         const a = (i/10) * Math.PI * 2;
                         const r = obj.baseR * (0.8 + Math.random() * 0.4);
@@ -909,55 +1208,47 @@
                     }
                     ctx.closePath();
                     ctx.fill();
-                    // Metallic shadow accent
                     ctx.fillStyle = "rgba(0,0,0,0.3)"; ctx.fill();
                     break;
                 
                 case 'debris':
-                    // Geometric random metallic shapes
                     ctx.fillRect(-obj.baseR, -obj.baseR/2, obj.baseR*1.5, obj.baseR);
                     ctx.fillStyle = "rgba(255,255,255,0.1)"; ctx.fillRect(-obj.baseR/2, -obj.baseR/4, obj.baseR/2, obj.baseR/2);
                     break;
 
                 case 'ship':
-                    // Cockpit/body/wings
                     ctx.beginPath();
-                    ctx.moveTo(0, -obj.baseR*1.5); // Nose
-                    ctx.lineTo(obj.baseR/2, obj.baseR); // Right Wing
-                    ctx.lineTo(0, obj.baseR/2); // Body
-                    ctx.lineTo(-obj.baseR/2, obj.baseR); // Left Wing
+                    ctx.moveTo(0, -obj.baseR*1.5);
+                    ctx.lineTo(obj.baseR/2, obj.baseR);
+                    ctx.lineTo(0, obj.baseR/2);
+                    ctx.lineTo(-obj.baseR/2, obj.baseR);
                     ctx.closePath();
                     ctx.fill();
-                    ctx.fillStyle = obj.color2; ctx.fillRect(-obj.baseR/4, -obj.baseR/2, obj.baseR/2, obj.baseR/4); // Cockpit
+                    ctx.fillStyle = obj.color2; ctx.fillRect(-obj.baseR/4, -obj.baseR/2, obj.baseR/2, obj.baseR/4);
                     break;
 
                 case 'satellite':
-                    // Main body
                     ctx.fillRect(-obj.baseR/4, -obj.baseR/2, obj.baseR/2, obj.baseR);
-                    // Solar panels (2.5D perspective gradient)
                     let pGrad = ctx.createLinearGradient(-obj.baseR, 0, obj.baseR, 0);
                     pGrad.addColorStop(0, '#2980b9'); pGrad.addColorStop(0.5, '#fff'); pGrad.addColorStop(1, '#2980b9');
                     ctx.fillStyle = pGrad;
-                    ctx.fillRect(-obj.baseR, -obj.baseR/6, obj.baseR*0.7, obj.baseR/3); // Left panel
-                    ctx.fillRect(obj.baseR*0.3, -obj.baseR/6, obj.baseR*0.7, obj.baseR/3); // Right panel
+                    ctx.fillRect(-obj.baseR, -obj.baseR/6, obj.baseR*0.7, obj.baseR/3);
+                    ctx.fillRect(obj.baseR*0.3, -obj.baseR/6, obj.baseR*0.7, obj.baseR/3);
                     break;
 
                 case 'station':
-                    // Complex modular structure rendering
                     ctx.fillStyle = obj.color1;
-                    ctx.fillRect(-obj.baseR/2, -obj.baseR/2, obj.baseR, obj.baseR); // Core
-                    ctx.fillStyle = "#fff"; // Windows
+                    ctx.fillRect(-obj.baseR/2, -obj.baseR/2, obj.baseR, obj.baseR);
+                    ctx.fillStyle = "#fff";
                     ctx.fillRect(-obj.baseR/4, -obj.baseR/4, 2, 2); ctx.fillRect(0, -obj.baseR/4, 2, 2); ctx.fillRect(obj.baseR/4, -obj.baseR/4, 2, 2);
                     ctx.fillStyle = obj.color2; 
-                    // Spokes/Modules
                     ctx.fillRect(-obj.baseR, -obj.baseR/10, obj.baseR*2, obj.baseR/5);
                     ctx.fillRect(-obj.baseR/10, -obj.baseR, obj.baseR/5, obj.baseR*2);
                     break;
 
                 case 'meteor':
                 case 'comet':
-                    ctx.restore(); // Restore before drawing tail mechanics
-                    // High-End Tail Rendering Factory
+                    ctx.restore();
                     if (obj.trail.length > 1) {
                         for (let t = 0; t < obj.trail.length - 1; t++) {
                             const p1 = obj.trail[t];
@@ -969,7 +1260,6 @@
                             ctx.lineTo(p2.x, p2.y);
                             ctx.lineWidth = obj.baseR * pct * (obj.type === 'comet' ? 3 : 1);
                             
-                            // Advanced tail gradient factor
                             let tGrad = ctx.createLinearGradient(p1.x, p1.y, p2.x, p2.y);
                             tGrad.addColorStop(0, "rgba(0,0,0,0)");
                             tGrad.addColorStop(1, obj.color2);
@@ -979,7 +1269,7 @@
                             ctx.stroke();
                         }
                     }
-                    ctx.save(); // Save again to draw the head
+                    ctx.save();
                     ctx.translate(obj.x, obj.y);
                     ctx.beginPath();
                     ctx.arc(0, 0, obj.baseR, 0, Math.PI * 2);
