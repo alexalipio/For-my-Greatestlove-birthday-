@@ -1271,7 +1271,7 @@ canvas {
 }
 
 .collapse-all {
-    animation: collapseToPoint 3.5s forwards cubic-bezier(0.7, 0, 0.3, 1) !important;
+    animation: collapseToPoint 6s forwards cubic-bezier(0.7, 0, 0.3, 1) !important;
     pointer-events: none;
 }
 
@@ -1281,7 +1281,7 @@ canvas {
 }
 
 .big-bang-flash {
-    animation: flashOut 3s forwards;
+    animation: flashOut 5s forwards;
 }
 
 @keyframes flashOut {
@@ -1459,7 +1459,7 @@ canvas {
 
 <section id="final-outro-container">
     <div id="final-message">
-        <p class="glow-text" style="font-family: 'Indie Flower', cursive; font-size: 1.8rem; line-height: 1.6; max-width: 600px; margin: 0 auto; color: white;">
+        <p class="glow-text" style="font-family: 'Indie Flower', cursive; font-size: 2.6rem; line-height: 1.6; max-width: 600px; margin: 0 auto; color: white;">
             “Maybe in a different time, in a place a little kinder, our paths will cross again. If not, I still hope life leads you somewhere soft, somewhere you’re meant to be found. I love you always.”
         </p>
     </div>
@@ -3222,7 +3222,7 @@ function executeUniverseCollapse() {
                 msg.classList.remove('collapse-all');
                 msg.style.opacity = "0";
                 setTimeout(() => {
-                    msg.innerHTML = "<h1 style='color:white; font-family:\"Dancing Script\", cursive; font-size: 3.5rem; text-shadow: 0 0 30px white;'>To my greatest love, always and forever.</h1>";
+                    msg.innerHTML = "<h1 style='color:white; font-family:\"Dancing Script\", cursive; font-size: 4.5rem; text-shadow: 0 0 30px white;'>To my greatest love, always and forever.</h1>";
                     msg.style.opacity = "1";
                     if (sing) sing.style.opacity = "0";
                 }, 500);
@@ -3233,7 +3233,7 @@ function executeUniverseCollapse() {
 
 // Siguraduhin na hindi sasabay sa load ng gallery button
 window.addEventListener('load', () => {
-    setTimeout(setupOutroObserver, 3000); 
+    setTimeout(setupOutroObserver, 7000); 
 });
 
     </script> 
