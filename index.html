@@ -27,6 +27,646 @@
             -webkit-user-select: none;
             user-select: none;
         }
+        
+        #milkyLayer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+#planetLayer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+               /* --- UPDATED ENVELOPE CSS --- */
+.angel-envelope-wrapper {
+    position: fixed;
+    top: 120%; 
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10005;
+    display: none; 
+    align-items: center;
+    justify-content: center;
+    pointer-events: auto;
+    opacity: 0;
+    transition: top 6s cubic-bezier(0.45, 0.05, 0.55, 0.95), opacity 3s;
+    width: max-content;
+}
+
+.angel-envelope-body {
+    width: 160px;
+    height: 110px;
+    background: linear-gradient(135deg, #fffcf5 0%, #f7f1e3 100%);
+    border-radius: 8px;
+    border: 1.5px solid #dcd1ba;
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    box-shadow: 0 12px 45px rgba(0,0,0,0.4), 
+                0 0 20px rgba(255, 255, 255, 0.9), 
+                0 0 40px rgba(186, 104, 200, 0.4);
+    animation: envelope-bob 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes envelope-bob {
+    0% { transform: translateY(0px); }
+    100% { transform: translateY(-10px); }
+}
+
+
+      .angel-envelope-body::before {
+    content: "";
+    position: absolute;
+    top: 0; 
+    left: 0;
+            width: 0; height: 0;
+            border-left: 80px solid transparent;
+            border-right: 80px solid transparent;
+            border-top: 55px solid #ece0c8;
+            z-index: 2;
+            border-radius: 4px 4px 0 0;
+        }
+
+        .wax-seal {
+            position: absolute;
+            bottom: 35px;
+            width: 38px;
+            height: 38px;
+            background: radial-gradient(circle at 30% 30%, #e53935, #b71c1c);
+            border-radius: 50%;
+            z-index: 15;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.5), inset 0 0 8px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffd700;
+            font-size: 1.1rem;
+            border: 1px solid #9a1515;
+        }
+
+                      .angel-wing {
+    width: 320px; 
+    height: auto;
+    z-index: -1;
+    pointer-events: none;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.9)) 
+            drop-shadow(0 0 20px rgba(255, 255, 255, 0.6)) 
+            drop-shadow(0 0 40px rgba(186, 104, 200, 0.4))
+            drop-shadow(0 0 60px rgba(255, 255, 255, 0.3));
+    object-fit: contain;
+}
+
+
+        .wing-left { 
+            margin-right: -100px; 
+            animation: flap-left 1s ease-in-out infinite alternate;
+        }
+
+        .wing-right { 
+            margin-left: -100px; 
+            transform: scaleX(-1); 
+            animation: flap-right 1s ease-in-out infinite alternate;
+        }
+
+
+        @keyframes flap-left {
+            0% { transform: rotate(15deg) scale(0.95); }
+            100% { transform: rotate(-5deg) scale(1.05); }
+        }
+
+        @keyframes flap-right {
+            0% { transform: scaleX(-1) rotate(15deg) scale(0.95); }
+            100% { transform: scaleX(-1) rotate(-5deg) scale(1.05); }
+        }
+        
+.light-beam-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 2px;
+    height: 100vh;
+    background: white;
+    box-shadow: 0 0 100px 30px white, 0 0 150px 60px var(--accent);
+    opacity: 0;
+    z-index: 10006;
+    mix-blend-mode: screen;
+    pointer-events: none;
+}
+
+.volumetric-ray {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 200vw;
+    height: 200vw;
+    background: conic-gradient(
+        from 0deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.4) 5%,
+        transparent 10%,
+        rgba(186, 104, 200, 0.3) 15%,
+        transparent 20%
+    );
+    transform: translate(-50%, -50%) scale(0);
+    border-radius: 50%;
+    opacity: 0;
+    z-index: 10007;
+}
+
+@keyframes intenseGlow {
+    0% { filter: brightness(1) drop-shadow(0 0 5px gold); }
+    100% { filter: brightness(5) drop-shadow(0 0 50px white) drop-shadow(0 0 100px var(--accent)); }
+}
+
+@keyframes beamBurst {
+    0% { transform: translate(-50%, -50%) scaleX(1); opacity: 1; }
+    50% { transform: translate(-50%, -50%) scaleX(500); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scaleX(1000); opacity: 0; }
+}
+
+@keyframes rayRotate {
+    0% { transform: translate(-50%, -50%) rotate(0deg) scale(0); opacity: 0; }
+    20% { opacity: 0.8; scale: 1.2; }
+    100% { transform: translate(-50%, -50%) rotate(360deg) scale(2); opacity: 0; }
+}
+
+.envelope-tension {
+    animation: shake-envelope 0.1s infinite, intenseGlow 1.5s forwards ease-in;
+}
+
+@keyframes shake-envelope {
+    0% { transform: translate(-50%, -50%) rotate(0); }
+    50% { transform: translate(-50.5%, -49.5%) rotate(1deg); }
+    100% { transform: translate(-49.5%, -50.5%) rotate(-1deg); }
+}
+
+        #lock-screen {
+            position: fixed; inset: 0; background: #07030a; z-index: 20000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1), visibility 1s;
+            box-sizing: border-box; padding: 20px;
+        }
+        #lock-screen.unlocked { opacity: 0; visibility: hidden; pointer-events: none; }
+        
+        /* =========================================
+   ROYAL VAULT BACKGROUND
+========================================= */
+
+#vault-bg{
+    position:absolute;
+    inset:0;
+    overflow:hidden;
+    z-index:0;
+    background:#050103;
+}
+
+.liquid-storm{
+    position:absolute;
+    inset:-40%;
+    width:180%;
+    height:180%;
+    filter:
+    url(#gooey-ultimate)
+    contrast(115%)
+    brightness(105%);
+}
+
+.blob{
+    position:absolute;
+    border-radius:50%;
+    mix-blend-mode:screen;
+    animation:chaoticMove var(--dur) infinite alternate ease-in-out;
+
+    will-change:transform;
+}
+
+@keyframes chaoticMove{
+    0%{
+        transform:translate(0,0) rotate(0deg) scale(1);
+    }
+
+    50%{
+        transform:translate(15vw,-10vh) rotate(180deg) scale(1.4);
+    }
+
+    100%{
+        transform:translate(-15vw,20vh) rotate(360deg) scale(.8);
+    }
+}
+
+/* BLOBS */
+
+.b1{
+    width:85vw;
+    height:85vw;
+    top:-10%;
+    left:-10%;
+    background:radial-gradient(circle,#ff1493,transparent 70%);
+    --dur:18s;
+}
+
+.b2{
+    width:75vw;
+    height:75vw;
+    bottom:-10%;
+    right:-10%;
+    background:radial-gradient(circle,#30011e,transparent 70%);
+    --dur:22s;
+}
+
+.b3{
+    width:65vw;
+    height:65vw;
+    top:20%;
+    left:30%;
+    background:radial-gradient(circle,#ffd700,transparent 70%);
+    --dur:15s;
+}
+
+.b4{
+    width:95vw;
+    height:95vw;
+    bottom:10%;
+    left:10%;
+    background:radial-gradient(circle,#00f2ff,transparent 70%);
+    --dur:28s;
+}
+
+.b5{
+    width:55vw;
+    height:55vw;
+    top:50%;
+    right:20%;
+    background:radial-gradient(circle,#9d00ff,transparent 70%);
+    --dur:20s;
+}
+
+.b6{
+    width:50vw;
+    height:50vw;
+    top:10%;
+    left:50%;
+    background:radial-gradient(circle,#ff00ff,transparent 70%);
+    --dur:12s;
+}
+
+.b7{
+    width:90vw;
+    height:90vw;
+    top:-20%;
+    right:-10%;
+    background:radial-gradient(circle,#00ff88,transparent 70%);
+    --dur:35s;
+    opacity:.5;
+}
+
+.b8{
+    width:60vw;
+    height:60vw;
+    bottom:-10%;
+    left:40%;
+    background:radial-gradient(circle,#ff4500,transparent 70%);
+    --dur:25s;
+}
+
+.b9{
+    width:70vw;
+    height:70vw;
+    top:30%;
+    right:0;
+    background:radial-gradient(circle,#0000ff,transparent 70%);
+    --dur:30s;
+}
+
+.b10{
+    width:40vw;
+    height:40vw;
+    top:40%;
+    left:10%;
+    background:radial-gradient(circle,#ff1493,transparent 70%);
+    --dur:16s;
+}
+
+.b11{
+    width:100vw;
+    height:100vw;
+    bottom:-30%;
+    right:-20%;
+    background:radial-gradient(circle,#4b0082,transparent 70%);
+    --dur:40s;
+}
+
+.b12{
+    width:30vw;
+    height:30vw;
+    top:5%;
+    left:25%;
+    background:radial-gradient(circle,#ffffff,transparent 70%);
+    --dur:10s;
+    opacity:.3;
+}
+
+/* PRISM */
+
+.prism-container{
+    position:absolute;
+    inset:0;
+    z-index:1;
+    pointer-events:none;
+}
+
+.prism-shard{
+    position:absolute;
+    width:150px;
+    height:150px;
+
+    background:linear-gradient(
+        135deg,
+        rgba(255,255,255,.1),
+        rgba(255,255,255,0)
+    );
+
+    clip-path:polygon(
+        50% 0%,
+        100% 50%,
+        50% 100%,
+        0% 50%
+    );
+
+    backdrop-filter:blur(5px);
+
+    border:1px solid rgba(255,255,255,.2);
+
+    animation:prismFloat var(--p-dur) infinite linear;
+
+    mix-blend-mode:overlay;
+}
+
+@keyframes prismFloat{
+
+    0%{
+        transform:
+            translate(var(--x1),var(--y1))
+            rotate(0deg)
+            scale(.5);
+
+        opacity:0;
+    }
+
+    50%{
+        opacity:.6;
+    }
+
+    100%{
+        transform:
+            translate(var(--x2),var(--y2))
+            rotate(360deg)
+            scale(1.2);
+
+        opacity:0;
+    }
+}
+
+/* RAINBOW */
+
+.rainbow-glare{
+    position:absolute;
+    inset:-50%;
+
+    background:conic-gradient(
+        from 180deg,
+        #ff0000,
+        #ff00ff,
+        #0000ff,
+        #00ffff,
+        #00ff00,
+        #ffff00,
+        #ff0000
+    );
+
+    opacity:.05;
+
+    filter:blur(40px);
+
+    animation:prismRotate 25s linear infinite;
+
+    z-index:1;
+}
+
+@keyframes prismRotate{
+    from{
+        transform:rotate(0deg);
+    }
+
+    to{
+        transform:rotate(360deg);
+    }
+}
+
+/* IMPORTANT */
+
+.lock-container{
+    position:relative;
+    z-index:5;
+}
+
+        .lock-container {
+            width: 100%; max-width: 380px; text-align: center;
+            animation: lockFadeIn 1s ease-out;
+            position: relative;
+        }
+        @keyframes lockFadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        .lock-riddle {
+            font-family: 'Indie Flower', cursive; font-size: 1.55rem; color: var(--lavender);
+            margin-bottom: 30px; text-shadow: 0 0 12px rgba(243, 229, 245, 0.4);
+            line-height: 1.4; padding: 0 10px;
+        }
+
+        .padlock-art {
+    width: 220px;   /* 🔥 increased */
+    height: 310px;  /* 🔥 increased */
+    margin: 0 auto 35px;
+    position: relative;
+}
+        
+        /* FIX: Shake animation using translateX to prevent layout shift */
+        @keyframes lock-shake-fix {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-10px); }
+            40%, 80% { transform: translateX(12px); }
+        }
+        
+        .padlock-art.shaking {
+    animation: lock-shake-fix 0.4s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+        .padlock-shackle {
+    width: 140px;   /* 🔥 bigger */
+    height: 150px;  /* 🔥 bigger */
+    border: 20px solid #b0bec5; /* 🔥 thicker */
+    border-bottom: none;
+    border-radius: 80px 80px 0 0;
+
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+    box-sizing: border-box;
+
+    background: transparent;
+    box-shadow:
+        inset 6px 6px 12px rgba(255,255,255,0.25),
+        inset -6px 0 10px rgba(0,0,0,0.4);
+
+    transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform-origin: left bottom;
+}
+
+.padlock-shackle.open {
+    transform: translateX(-50%) translateY(-45px) rotate(-18deg);
+    border-color: #cfd8dc;
+}
+
+        .padlock-body {
+    width: 240px;  /* 🔥 bigger */
+    height: 180px; /* 🔥 bigger */
+
+    background: linear-gradient(135deg, #2c1a3a 0%, #150a21 100%);
+    border: 2px solid var(--accent);
+    border-radius: 28px;
+
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+
+    box-shadow:
+        0 18px 40px rgba(0,0,0,0.85),
+        var(--glow);
+
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+    border-top: 3px solid rgba(225, 190, 231, 0.4);
+}
+
+        .combo-dials {
+    display: flex;
+    justify-content: center;
+    gap: 6px; /* 🔥 slightly bigger spacing */
+    margin-top: 8px;
+    width: 92%;
+    touch-action: none;
+}
+
+        .dial-track {
+    width: 30px;   /* 🔥 bigger */
+    height: 45px;  /* 🔥 bigger */
+
+    background: #0f0716;
+    border-radius: 8px;
+    border: 1px solid rgba(186, 104, 200, 0.4);
+
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+
+    overflow: hidden;
+    position: relative;
+    cursor: grab;
+
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+        .dial-track:active { cursor: grabbing; }
+        
+        .dial-strip {
+            position: absolute; width: 100%; top: 0; left: 0;
+            display: flex; flex-direction: column; align-items: center;
+            pointer-events: none;
+        }
+        
+        .dial-number {
+            height: 45px; width: 100%; display: flex; align-items: center; justify-content: center;
+            font-family: 'Poppins', sans-serif; font-size: 1.2rem; font-weight: 600;
+            color: #e1bee7; text-shadow: 0 0 5px rgba(186, 104, 200, 0.6);
+        }
+
+        /* CLUE SYSTEM STYLING */
+        #clue-container {
+            position: absolute;
+            right: -140px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 120px;
+            text-align: left;
+            pointer-events: none;
+        }
+        .clue-text {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.4rem;
+            color: var(--soft-purple);
+            text-shadow: 0 0 10px rgba(186, 104, 200, 0.5);
+            display: inline-block;
+            white-space: normal;
+            line-height: 1.2;
+        }
+        #clue-particle-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        @media (max-width: 650px) {
+            #clue-container {
+                position: relative;
+                right: 0;
+                top: 0;
+                transform: none;
+                width: 100%;
+                text-align: center;
+                margin-top: 15px;
+                min-height: 40px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .padlock-body { width: 165px; }
+            .dial-track { width: 22px; height: 42px; }
+            .dial-number { height: 42px; font-size: 1.1rem; }
+        }
+
+        .lock-status-msg {
+            height: 20px; font-size: 0.88rem; margin-top: 18px; color: #ef5350;
+            font-weight: 400; letter-spacing: 0.5px; opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .lock-status-msg.visible { opacity: 1; }
+        .lock-status-msg.success { color: #66bb6a; }
 
         #canvas-bg { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
         #petal-canvas { position: fixed; inset: 0; z-index: 9000; pointer-events: none; display: none; }
@@ -42,25 +682,111 @@
             opacity: 0; pointer-events: none; transition: opacity 0.8s ease-in-out;
         }
 
-        #curtain-container { position: fixed; inset: 0; z-index: 10000; display: flex; overflow: hidden; pointer-events: none; }
-        .curtain-half { 
-            width: 50%; height: 100%; background: #1a1025; 
-            transition: transform 3.5s cubic-bezier(0.25, 1, 0.5, 1); 
-            position: relative; box-shadow: inset 0 0 50px rgba(0,0,0,0.9); 
-            pointer-events: auto;
-        }
-        .curtain-left { border-right: 2px solid var(--accent); transform: translateX(0); }
-        .curtain-right { border-left: 2px solid var(--accent); transform: translateX(0); }
-        .curtain-open .curtain-left { transform: translateX(-100%); }
-        .curtain-open .curtain-right { transform: translateX(100%); }
-        
-        #curtain-content { 
-            position: absolute; top: 50%; left: 50%; 
-            transform: translate(-50%, -50%); z-index: 10001; 
-            text-align: center; width: 100%; 
-            transition: opacity 0.5s ease;
-            pointer-events: auto;
-        }
+        #curtain-container {
+    position: fixed; 
+    inset: 0; 
+    z-index: 10000; 
+    display: flex; 
+    overflow: hidden; 
+    pointer-events: none; 
+}
+
+/* 1.ANG BASE NG KURTINA */
+.curtain-half {
+    width: 50%; 
+    height: 100%; 
+    background-image: url('https://file.garden/afIEksSC83E7LKis/Untitled%20design_20260508_131851_0000.png'); 
+    background-size: 200% 100%; /* Ginawang 2x ang laki para mahati sa gitna */
+    background-repeat: no-repeat;
+    position: fixed; 
+    top: 0;
+    transition: transform 3.5s cubic-bezier(0.25, 1, 0.5, 1); 
+    z-index: 10000;
+    pointer-events: auto;
+    /* Inner shadow para magmukhang makapal ang tela */
+    box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.7); 
+}
+
+/* 2. ANG PAGHAHATI SA GITNA */
+.curtain-left {
+    left: 0;
+    background-position: left center; /* Kinuha ang kaliwang side ng image */
+    border-right: 1px solid rgba(255, 215, 0, 0.2); /* Manipis na gold seam sa gitna */
+    transform: translateX(0);
+}
+
+.curtain-right {
+    right: 0;
+    background-position: right center; /* Kinuha ang kanang side ng image */
+    border-left: 1px solid rgba(255, 215, 0, 0.2);
+    transform: translateX(0);
+}
+
+/* 3. ANG LITERAL NA PAGBUKAS (Trigger) */
+/* Siguraduhin na ang 'curtain-open' class ay nilalagay sa parent container */
+.curtain-open .curtain-left {
+    transform: translateX(-100%); /* Hahatak pakaliwa */
+}
+
+.curtain-open .curtain-right {
+    transform: translateX(100%); /* Hahatak pakanan */
+}
+
+/* 4. ANG TEXT SA HARAP NG KURTINA (Gold & White Glow) */
+#curtain-content { 
+    position: absolute; 
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%); 
+    z-index: 10001; 
+    text-align: center; 
+    width: 100%; 
+    transition: opacity 1s ease;
+    pointer-events: auto;
+    color: #FFD700; /* Gold Font */
+    font-family: 'Dancing Script', cursive;
+    text-shadow: 0 0 15px rgba(255, 215, 0, 0.8), 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+
+
+
+/* Gold High-End Shimmer Effect */
+.glow-text.curtain-title {
+    background: linear-gradient(
+        to right, 
+        #BF953F 20%, 
+        #FCF6BA 40%, 
+        #FBF5B7 60%, 
+        #AA771C 80%
+    );
+    background-size: 200% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    
+    animation: 
+        shine 3s linear infinite, 
+        breatheGoldGlow 3s ease-in-out infinite alternate;
+}
+
+/* Paggalaw ng Gold Shine */
+@keyframes shine {
+    to {
+        background-position: 200% center;
+    }
+}
+
+/* "Breathing" Gold Glow Effect */
+@keyframes breatheGoldGlow {
+    from {
+        filter: drop-shadow(0 0 15px rgba(191, 149, 63, 0.4));
+    }
+    to {
+        filter: drop-shadow(0 0 35px rgba(252, 246, 186, 0.8));
+    }
+}
+
 
         .card { 
             background: rgba(255, 255, 255, 0.08); 
@@ -79,63 +805,67 @@
         }
         .card.active { opacity: 1; display: block; }
 
-        /* Parchment Card layout */
-        .parchment-card { 
-            background: #f4e4bc; 
-            background-image: url('https://www.transparenttextures.com/patterns/pinstriped-suit.png');
-            color: #2b1b17; border: 10px double #8b5a2b; 
-            box-shadow: 0 0 40px rgba(0,0,0,0.6); 
-            top: 60%; 
-            width: 88%; max-width: 440px;
-            height: 480px !important;
-            max-height: 480px !important;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            overflow: hidden;
-            box-sizing: border-box;
-            padding: 25px;
-        }
+.card.parchment-card {
+    background: #f4e4bc; 
+    background-image: url('https://www.transparenttextures.com/patterns/pinstriped-suit.png');
+    color: #2b1b17; 
+    border: 10px double #8b5a2b; 
+    box-shadow: 0 0 40px rgba(0,0,0,0.6); 
+    position: fixed;
+    top: 50% !important; 
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    width: 90%; 
+    max-width: 440px;
+    height: 650px !important; 
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; 
+    padding: 35px 25px 20px 25px; 
+    z-index: 1000;
+    box-sizing: border-box;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+}
 
-        #lsm-body {
-            font-size: 1.02rem; 
-            text-align: left; 
-            line-height: 1.6; 
-            font-weight: 600; 
-            color: #2b1b17; 
-            word-wrap: break-word;
-            max-height: 250px;
-            overflow-y: auto;
-            padding-right: 8px;
-            margin-bottom: 15px;
-            flex-grow: 1;
-        }
+.intense-yellow-pulse {
+    filter: drop-shadow(0 0 10px rgba(255, 235, 59, 0.7));
+    animation: intenseYellowPulse 1.8s infinite alternate !important;
+    cursor: pointer;
+}
 
-        #lsm-body::-webkit-scrollbar { width: 5px; }
-        #lsm-body::-webkit-scrollbar-thumb { background: #8b5a2b; border-radius: 10px; }
-        #lsm-body::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.05); }
+@keyframes intenseYellowPulse {
+    0% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(255, 235, 59, 0.7)); }
+    100% { transform: scale(1.1); filter: drop-shadow(0 0 35px rgba(255, 235, 59, 1)); }
+}
 
-        .pulse { animation: pulseAnim 2s infinite; }
-        @keyframes pulseAnim { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); } }
-        
-        .glow-text { text-shadow: var(--glow); }
-        .yellow-glow { text-shadow: var(--yellow-glow) !important; }
-        .lavender-glow-pulse { 
-            color: var(--lavender) !important;
-            text-shadow: var(--lavender-glow);
-            animation: lavenderPulse 2s infinite;
-        }
-        @keyframes lavenderPulse {
-            0%, 100% { text-shadow: var(--lavender-glow); opacity: 1; }
-            50% { text-shadow: 0 0 10px rgba(230, 208, 235, 0.4); opacity: 0.8; }
-        }
+.lavender-image {
+    width: 90px;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+    pointer-events: none;
+}
 
-        /* Adjusted Lyrics Container - Itinaas pa lalo para sa two-line safety */
-        #lyrics-container { 
+.lavender-click-text {
+    font-family: 'Indie Flower', cursive;
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #ba68c8;
+    margin-top: 5px;
+    display: block;
+    text-align: center;
+}
+
+
+                               #lyrics-container { 
             position: fixed; 
-            top: calc(58% - 275px);
+            top: 50% !important; 
             left: 50%;
-            transform: translateX(-50%);
+            transform: translate(-50%, -50%);
+            margin-top: -380px !important; 
             width: 85%; 
             max-width: 440px;
             text-align: center; 
@@ -143,11 +873,27 @@
             pointer-events: none; 
             transition: all 0.5s ease-in-out;
             opacity: 1;
-            min-height: 70px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
+
+        #lyrics-text, #lsm-body {
+            pointer-events: auto !important;
+        }
+
+        .parchment-card {
+            pointer-events: auto !important;
+            z-index: 3000 !important;
+        }
+
+        #wish-input, .btn {
+            position: relative;
+            z-index: 3001 !important;
+            pointer-events: auto !important;
+        }
+
+
 
         #lyrics-container.bottom-align {
             top: unset !important; bottom: 8% !important;
@@ -173,49 +919,6 @@
             text-shadow: 0 0 15px #ba68c8, 0 0 25px rgba(186, 104, 200, 0.8);
         }
 
-        .flying-envelope-container { 
-            position: fixed; top: 120%; left: 50%; transform: translate(-50%, -50%); 
-            z-index: 10005 !important; display: none; pointer-events: auto;
-        }
-        
-        .envelope-body { 
-            width: 120px; height: 80px; 
-            background: #e4d5b7; 
-            border: 1px solid #c3b091;
-            position: relative; cursor: pointer; 
-            animation: bobbing 2s ease-in-out infinite; 
-            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
-            transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
-            pointer-events: auto;
-            border-radius: 0; outline: none; padding: 0;
-            display: block; -webkit-appearance: none; appearance: none;
-        }
-        .envelope-body::before { 
-            content: ""; position: absolute; top: 0; left: 0;
-            border-top: 45px solid #dcd0b9; border-left: 59px solid transparent; border-right: 59px solid transparent; 
-        }
-        .envelope-body::after {
-            content: "✦"; position: absolute; top: 32px; left: 50%; transform: translateX(-50%);
-            width: 22px; height: 22px; background: #800c14; border-radius: 50%;
-            color: #ffd700; font-size: 0.7rem; line-height: 22px; text-align: center;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.3); z-index: 10;
-        }
-        .wing { 
-            position: absolute; width: 65px; height: 40px; 
-            background: #fbf8f3; 
-            border: 1px solid #e2d9cc;
-            border-radius: 65% 35% 0 50%; 
-            top: -12px; z-index: -1; 
-            animation: flap 0.38s ease-in-out infinite alternate; 
-            box-shadow: inset -5px -2px 10px rgba(0,0,0,0.05);
-            pointer-events: none;
-        }
-        .wing-left { left: -52px; transform-origin: right; }
-        .wing-right { right: -52px; transform-origin: left; transform: scaleX(-1); }
-
-        @keyframes flap { from { transform: rotate(12deg); } to { transform: rotate(-28deg); } }
-        @keyframes bobbing { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
-
         #particle-canvas { position: fixed; inset: 0; z-index: 10010; pointer-events: none; display: none; }
 
         .scatter-photo { 
@@ -235,9 +938,26 @@
         .scatter-photo img { width: 100% !important; height: 100% !important; object-fit: cover !important; display: block !important; }
 
         #cinema-gallery { 
-            display: none; width: 100%; position: relative; z-index: 9200; 
-            min-height: 100vh; padding-bottom: 120px; box-sizing: border-box;
-        }
+    width: 100%;
+    position: relative;
+    z-index: 9200;
+    min-height: 100vh;
+    padding-bottom: 120px;
+    box-sizing: border-box;
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+
+    transition: opacity 0.8s ease, visibility 0.8s ease;
+}
+
+.cinema-open #cinema-gallery {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
         #cinema-list {
             display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; margin: 0 auto;
         }
@@ -265,7 +985,6 @@
             position: fixed; 
             top: 50%; left: 50%;
             transform: translate(-50%, calc(-50% + 400px)) !important;
-            
             z-index: 9999; width: auto; min-width: 180px; text-align: center;
             background: linear-gradient(45deg, #ba68c8, #9c27b0); box-shadow: var(--glow);
             transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
@@ -278,10 +997,433 @@
         }
         
         textarea { width: 100%; padding: 13px; border-radius: 12px; border: 1px solid #ddd; margin-top: 10px; box-sizing: border-box; font-family: 'Poppins'; font-size: 0.95rem; color: #333; }
+        
+                        .parchment-card #lsm-body {
+            position: relative;
+            margin-top: 15px !important; 
+            max-height: 250px !important; 
+            overflow-y: auto !important; 
+            padding: 0 15px;
+            text-align: center;
+            line-height: 1.6;
+            z-index: 9999 !important;
+            display: block;
+            pointer-events: auto !important;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        #wish-input, #lsm-action button {
+            position: relative;
+            z-index: 9999 !important;
+            pointer-events: auto !important;
+        }
+        
+        /* --- UPDATED CINEMA CONTAINER CSS --- */
+.cinema-container {
+    position: fixed; 
+    top: 50%; left: 50%;
+    transform: translate(-50%, calc(-50% + 400px)) !important;
+    z-index: 9999;
+    width: 180px; 
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+    outline: none;
+
+}
+
+.cinema-img {
+    width: 100%;
+    display: block;
+    border-radius: 18px;
+    animation: cinemaPulse 2.2s infinite ease-in-out;
+    filter: drop-shadow(0 0 12px white);
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.2s;
+}
+
+/* CLICK ANIMATION CLASS */
+.cinema-img.clicked {
+    transform: scale(0.8) !important;
+    filter: drop-shadow(0 0 50px #ba68c8) brightness(1.5) !important;
+}
+
+@keyframes cinemaPulse {
+    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 8px white); }
+    50% { transform: scale(1.05); filter: drop-shadow(0 0 35px white); }
+}
+
+.particle { position: absolute; pointer-events: none; opacity: 0; z-index: 10000; }
+.popcorn { width: 6px; height: 6px; border-radius: 50%; background: #ffd84d; box-shadow: 0 0 10px #ffd84d; }
+.polaroid { width: 10px; height: 12px; background: white; border: 1px solid #ddd; box-shadow: 0 0 8px rgba(255,255,255,0.7); }
+.spark { width: 4px; height: 4px; border-radius: 50%; background: white; box-shadow: 0 0 12px white; }
+
+@media (max-width: 600px) {
+    .cinema-container { transform: translate(-50%, calc(-50% + 280px)) !important; width: 140px; }
+}
+
+.intense-yellow-pulse {
+    pointer-events: auto !important;
+    cursor: pointer;
+    z-index: 10002; /* Mas mataas sa card body */
+}
+
+/* REMOVE BLUE TAP FLASH */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ONLY REAL BUTTONS / CLICKABLE ITEMS */
+button,
+a,
+img,
+.clickable,
+.try-password-btn,
+#tryPasswordBtn {
+  user-select: none;
+  outline: none;
+
+  transition:
+    filter 0.22s ease,
+    opacity 0.22s ease,
+    box-shadow 0.22s ease;
+
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* SOFT HOVER */
+button:hover,
+a:hover,
+img:hover,
+.clickable:hover,
+.try-password-btn:hover,
+#tryPasswordBtn:hover {
+  filter: brightness(1.05);
+}
+
+/* PREMIUM PRESS EFFECT */
+button:active,
+a:active,
+img:active,
+.clickable:active,
+.try-password-btn:active,
+#tryPasswordBtn:active {
+  filter: brightness(0.82);
+  opacity: 0.96;
+}
+
+canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* UPDATED READABLE GLASS BUTTON */
+#curtain-content #tryPasswordBtn {
+    background: rgba(255, 255, 255, 0.1) !important; /* Slightly more opaque glass */
+    /* PALITAN ITO: Darker gold/bronze para readable sa light glass */
+    color: #8B4513 !important; /* SaddleBrown/Bronze - Darker contrast */
+    border: 2px solid #DAA520 !important; /* Goldenrod border */
+    padding: 15px 45px !important;
+    font-size: 1.6rem !important;
+    font-family: 'Dancing Script', cursive !important;
+    font-weight: bold !important; /* Dagdag kapal para sa visibility */
+    border-radius: 50px !important; 
+    cursor: pointer !important;
+    position: relative !important;
+    overflow: hidden !important;
+    transition: all 0.5s ease !important;
+    /* PALITAN ITO: Walang glow habang naka-idle para hindi magulo */
+    text-shadow: none !important;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2), inset 0 0 10px rgba(218, 165, 32, 0.2) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    letter-spacing: 2px !important;
+    z-index: 10005 !important;
+    display: inline-block !important;
+}
+
+/* Hover Effect: Bright Gold (Visible against text) */
+#curtain-content #tryPasswordBtn:hover {
+    background: #FFD700 !important;
+    /* PALITAN ITO: Black text pag hover para max contrast */
+    color: #000000 !important; 
+    box-shadow: 0 0 40px rgba(255, 215, 0, 0.9) !important;
+    transform: scale(1.08) !important;
+    font-weight: bold !important;
+}
+
+#curtain-content #tryPasswordBtn:hover::after {
+    left: 130% !important;
+}
+
+/* =========================================
+   LARGE VERTICAL GLASSMORPHISM PANEL
+========================================= */
+
+.glass-bg{
+    position: absolute;
+
+    width: 460px;
+    height: 600px;
+
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
+    border-radius: 45px;
+
+    background: rgba(255,255,255,0.05);
+
+    backdrop-filter: blur(45px) saturate(200%);
+    -webkit-backdrop-filter: blur(45px) saturate(200%);
+
+    border: 1px solid rgba(255,255,255,0.14);
+
+    box-shadow:
+        inset 0 0 30px rgba(255,255,255,0.06),
+        0 30px 80px rgba(0,0,0,0.7);
+
+    overflow: hidden;
+}
+
+/* LIGHT REFLECTION */
+.glass-bg::before{
+    content:'';
+
+    position:absolute;
+
+    top:0;
+    left:-20%;
+
+    width:140%;
+    height:140px;
+
+    background: linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.2),
+        rgba(255,255,255,0)
+    );
+
+    transform: rotate(-5deg);
+
+    pointer-events:none;
+}
+
+/* Siguraduhin na ang gallery mo ay laging nasa ibabaw ng background */
+#cinema-gallery {
+    z-index: 100 !important;
+}
+
+#final-outro-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 1; /* Mababa lang muna */
+    background: transparent;
+    pointer-events: none; /* Hindi makakaharang sa click */
+}
+
+#final-message {
+    opacity: 0;
+    transition: opacity 2s ease-in-out;
+    text-align: center;
+    padding: 40px;
+    color: white;
+    z-index: 101;
+}
+
+#singularity {
+    width: 6px;
+    height: 6px;
+    background: white;
+    border-radius: 50%;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    box-shadow: 0 0 30px 10px white;
+    opacity: 0;
+    z-index: 9998; 
+    pointer-events: none;
+}
+
+#white-out-explosion {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: white;
+    opacity: 0;
+    z-index: 9999;
+    pointer-events: none;
+}
+
+.collapse-all {
+    animation: collapseToPoint 3.5s forwards cubic-bezier(0.7, 0, 0.3, 1) !important;
+    pointer-events: none;
+}
+
+@keyframes collapseToPoint {
+    0% { transform: scale(1) rotate(0deg); filter: blur(0px); opacity: 1; }
+    100% { transform: scale(0) rotate(1080deg); filter: blur(50px); opacity: 0; }
+}
+
+.big-bang-flash {
+    animation: flashOut 3s forwards;
+}
+
+@keyframes flashOut {
+    0% { opacity: 0; }
+    20% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+
     </style>
 </head>
 
 <body>
+    
+    <canvas id="milkyLayer"></canvas>
+<canvas id="planetLayer"></canvas>
+
+    <audio id="sfx-dial-turn"><source src="https://file.garden/afIEksSC83E7LKis/mechanical-metal-combinat-jypmsa3c.wav" type="audio/wav"></audio>
+    <audio id="sfx-unlock-bell"><source src="https://file.garden/afIEksSC83E7LKis/tunetank.com_padlock-lock-unlocked.wav" type="audio/wav"></audio>
+
+    <div id="lock-screen">
+
+    <!-- AURORA BACKGROUND -->
+    <svg style="display:none;">
+        <filter id="gooey-ultimate">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="25" result="blur"/>
+            <feColorMatrix in="blur" mode="matrix"
+                values="
+                1 0 0 0 0
+                0 1 0 0 0
+                0 0 1 0 0
+                0 0 0 25 -12"/>
+        </filter>
+    </svg>
+
+    <div id="vault-bg">
+        <div class="liquid-storm">
+            <div class="blob b1"></div>
+            <div class="blob b2"></div>
+            <div class="blob b3"></div>
+            <div class="blob b4"></div>
+            <div class="blob b5"></div>
+            <div class="blob b6"></div>
+            <div class="blob b7"></div>
+            <div class="blob b8"></div>
+            <div class="blob b9"></div>
+            <div class="blob b10"></div>
+            <div class="blob b11"></div>
+            <div class="blob b12"></div>
+        </div>
+
+        <div class="prism-container" id="prism-box"></div>
+
+        <div class="rainbow-glare"></div>
+    </div>
+
+<!-- GLASSMORPHISM BACKGROUND -->
+<div class="glass-bg"></div>
+
+    <!-- ORIGINAL LOCK CONTENT -->
+    <div class="lock-container">
+        <div class="lock-riddle">
+            Our favorite special date...<br>
+            <span style="color: var(--accent); font-size: 1.50rem;">
+                When did the magic begin?
+            </span>
+        </div>
+
+        <div class="padlock-art" id="padlock-box">
+            <div class="padlock-shackle" id="shackle"></div>
+
+            <div class="padlock-body">
+
+                <div style="
+                    font-family:'Dancing Script';
+                    font-size:2rem;
+                    color:#f3e5f5;
+                    margin-bottom:2px;
+                ">
+                    Slide to Unlock
+                </div>
+
+                <div class="combo-dials" id="dials-wrapper">
+                    <div class="dial-track" data-index="0">
+                        <div class="dial-strip" id="strip-0"></div>
+                    </div>
+
+                    <div class="dial-track" data-index="1">
+                        <div class="dial-strip" id="strip-1"></div>
+                    </div>
+
+                    <div class="dial-track" data-index="2">
+                        <div class="dial-strip" id="strip-2"></div>
+                    </div>
+
+                    <div class="dial-track" data-index="3">
+                        <div class="dial-strip" id="strip-3"></div>
+                    </div>
+
+                    <div class="dial-track" data-index="4">
+                        <div class="dial-strip" id="strip-4"></div>
+                    </div>
+
+                    <div class="dial-track" data-index="5">
+                        <div class="dial-strip" id="strip-5"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="clue-container">
+                <canvas id="clue-particle-canvas"></canvas>
+                <span id="clue-display" class="clue-text"></span>
+            </div>
+        </div>
+
+        <button class="btn pulse"
+            style="min-width:240px; margin-top:5px;"
+            onclick="validatePasscode()">
+            Try Password
+        </button>
+
+        <div class="lock-status-msg" id="status-msg">
+            Invalid passcode. Try again.
+        </div>
+    </div>
+</div>
+
+        <div id="flying-env" class="angel-envelope-wrapper">
+        <img src="https://file.garden/afIEksSC83E7LKis/Untitled%20design_20260505_021931_0000.png"
+         class="angel-wing wing-left">
+
+        <div class="angel-envelope-body" onclick="dissolveEnvelope()">
+            <div class="wax-seal">❤</div>
+            <div style="position:absolute; bottom:8px; width:100%; text-align:center; color:#8b7355; font-size:0.65rem; font-weight:bold; font-family: 'Poppins'; pointer-events:none; letter-spacing: 0.5px;">
+                Melt the seal to read...
+            </div>
+        </div>
+
+        <img src="https://file.garden/afIEksSC83E7LKis/Untitled%20design_20260505_021931_0000.png" class="angel-wing wing-right">
+    </div>
+
+
     <div id="film-grain"></div>
     <div id="fade-overlay"></div>
     <canvas id="canvas-bg"></canvas>
@@ -291,20 +1433,14 @@
     <div id="lyrics-container"><div id="lyrics-text"></div></div>
 
     <div id="curtain-container">
-        <div class="curtain-half curtain-left"></div>
-        <div id="curtain-content">
-            <h1 class="glow-text" style="font-family:'Dancing Script'; font-size:3.5rem; color:white;">The Story of Us</h1>
-            <button class="btn pulse" onclick="startExperience()">Enter Memories</button>
+    <div class="curtain-half curtain-left"></div>
+    <div class="curtain-half curtain-right"></div> <div id="curtain-content">
+        <h1 class="glow-text curtain-title" style="font-family:'Dancing Script'; font-size:5rem; color: #FFD700; text-shadow: 0 0 20px rgba(255, 215, 0, 0.7);">The Story of Us</h1>
+        <button id="tryPasswordBtn" onclick="startExperience()">Enter Memories</button>
+
+
         </div>
         <div class="curtain-half curtain-right"></div>
-    </div>
-    
-    <div id="flying-env" class="flying-envelope-container">
-        <button class="envelope-body" id="env-body" onclick="dissolveEnvelope()">
-            <div class="wing wing-left"></div>
-            <div class="wing wing-right"></div>
-            <div style="position:absolute; bottom:6px; width:100%; text-align:center; color:#5d4037; font-size:0.6rem; font-weight:bold; font-family:'Indie Flower'; pointer-events:none;">Open Me</div>
-        </button>
     </div>
 
     <div class="card" id="main-card">
@@ -317,16 +1453,303 @@
         <div id="cinema-list"></div>
         <div id="cinema-end" style="text-align:center; padding:100px 20px; display:none;">
             <h2 class="glow-text" style="font-family:'Dancing Script'; font-size:2.8rem; color:white;">I love every memories with you, my love.</h2>
-            <p style="font-family:'Indie Flower'; font-size:1.5rem; color:var(--soft-purple); margin-top:15px;">God bless you always. 💜</p>
+            <p style="font-family:'Indie Flower'; font-size:1.5rem; color:var(--soft-purple); margin-top:15px;"> This is the only gift i can give you for now, hope you like it, God bless you always. 💜</p>
         </div>
     </div>
 
-    <audio id="music-ligaya"><source src="https://file.garden/afIEksSC83E7LKis/mrld%20-%20Ligaya.mp3" type="audio/mpeg"></audio>
-    <audio id="music-palagi"><source src="https://file.garden/afIEksSC83E7LKis/PALAGI%20-%20TJxKZ%20Version%20OFFICIAL%20LYRIC%20VIDEO.mp3" type="audio/mpeg"></audio>
-    <audio id="sfx-typewriter" loop><source src="https://file.garden/afIEksSC83E7LKis/soundreality-keyboard-typing-fast-381781.mp3" type="audio/mpeg"></audio>
-    <audio id="sfx-shuffling" loop><source src="https://file.garden/afIEksSC83E7LKis/freesound_community-shuffling-book-80736.mp3" type="audio/mpeg"></audio>
+<section id="final-outro-container">
+    <div id="final-message">
+        <p class="glow-text" style="font-family: 'Indie Flower', cursive; font-size: 1.8rem; line-height: 1.6; max-width: 600px; margin: 0 auto; color: white;">
+            “Maybe in a different time, in a place a little kinder, our paths will cross again. If not, I still hope life leads you somewhere soft, somewhere you’re meant to be found. I love you always.”
+        </p>
+    </div>
+</section>
+
+<div id="singularity"></div>
+<div id="white-out-explosion"></div>
+
+    <audio id="music-ligaya" loop><source src="https://file.garden/afIEksSC83E7LKis/mrld%20-%20Ligaya.mp3" type="audio/mpeg"></audio>
+<audio id="music-palagi"><source src="https://file.garden/afIEksSC83E7LKis/PALAGI%20-%20TJxKZ%20Version%20OFFICIAL%20LYRIC%20VIDEO.mp3" type="audio/mpeg"></audio>
+<audio id="sfx-wings" loop><source src="https://file.garden/afIEksSC83E7LKis/dragon-studio-dragon-wings-flapping-478385.mp3" type="audio/mpeg"></audio>
+<audio id="sfx-typewriter" loop><source src="https://file.garden/afIEksSC83E7LKis/soundreality-keyboard-typing-fast-381781.mp3" type="audio/mpeg"></audio>
+<audio id="sfx-shuffling" loop><source src="https://file.garden/afIEksSC83E7LKis/freesound_community-shuffling-book-80736.mp3" type="audio/mpeg"></audio>
+<audio id="audio-voice"><source src="https://file.garden/afIEksSC83E7LKis/lv_0_20260506181046.mp3" type="audio/mpeg"></audio>
 
     <script>
+        const dialValues = [0, 0, 0, 0, 0, 0];
+        const secretCode = "011224";
+
+        let dialHeight = window.innerWidth <= 360 ? 42 : 45;
+
+        const dialTurnSound = document.getElementById('sfx-dial-turn');
+        const unlockSound = document.getElementById('sfx-unlock-bell');
+
+        function playDialClick() {
+            dialTurnSound.currentTime = 0;
+            dialTurnSound.volume = 0.55;
+            dialTurnSound.play().catch(e => {});
+        }
+            
+        let isSpaceInitialized = false; 
+            
+        function buildDials() {
+            for (let d = 0; d < 6; d++) {
+                const strip = document.getElementById(`strip-${d}`);
+                strip.innerHTML = "";
+                for (let i = 0; i < 10; i++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'dial-number';
+                    cell.innerText = i;
+                    strip.appendChild(cell);
+                }
+                strip.style.transform = `translateY(0px)`;
+            }
+            setupDragMechanics();
+        }
+
+        function setupDragMechanics() {
+            const tracks = document.querySelectorAll('.dial-track');
+
+            tracks.forEach(track => {
+                const index = parseInt(track.getAttribute('data-index'));
+                const strip = track.querySelector('.dial-strip');
+                
+                let isDragging = false;
+                let startY = 0;
+                let currentTranslateY = -dialValues[index] * dialHeight;
+                let initialTranslateY = currentTranslateY;
+
+                const onStart = (e) => {
+                    isDragging = true;
+                    startY = e.pageY || e.touches[0].pageY;
+                    initialTranslateY = -dialValues[index] * dialHeight;
+                    strip.style.transition = 'none';
+                };
+
+                const onMove = (e) => {
+                    if (!isDragging) return;
+                    const currentY = e.pageY || (e.touches ? e.touches[0].pageY : 0);
+                    const deltaY = currentY - startY;
+                    
+                    let newY = initialTranslateY + deltaY;
+                    
+                    const minTranslate = -9 * dialHeight;
+                    const maxTranslate = 0;
+                    if (newY > maxTranslate) newY = maxTranslate;
+                    if (newY < minTranslate) newY = minTranslate;
+
+                    strip.style.transform = `translateY(${newY}px)`;
+                    currentTranslateY = newY;
+                };
+
+                const onEnd = () => {
+                    if (!isDragging) return;
+                    isDragging = false;
+
+                    const calculatedDigit = Math.round(Math.abs(currentTranslateY) / dialHeight);
+                    
+                    if (dialValues[index] !== calculatedDigit) {
+                        dialValues[index] = Math.max(0, Math.min(9, calculatedDigit));
+                        playDialClick();
+                    }
+
+                    strip.style.transition = 'transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.15)';
+                    strip.style.transform = `translateY(-${dialValues[index] * dialHeight}px)`;
+                };
+
+                track.addEventListener('mousedown', onStart);
+                window.addEventListener('mousemove', onMove);
+                window.addEventListener('mouseup', onEnd);
+
+                track.addEventListener('touchstart', onStart, { passive: true });
+                window.addEventListener('touchmove', onMove, { passive: false });
+                window.addEventListener('touchend', onEnd);
+            });
+        }
+
+        // CLUE SYSTEM STATE
+        let failedAttempts = 0;
+        const clues = [
+            "happiest day of our life",
+            "month/day/year",
+            "the day you said yes"
+        ];
+
+        function validatePasscode() {
+            const codeAttempt = dialValues.join('');
+            const status = document.getElementById('status-msg');
+            const padlockArt = document.getElementById('padlock-box');
+            
+            if (codeAttempt === secretCode) {
+                status.innerText = "Access Granted! Opening lock...";
+                status.classList.remove('success');
+                status.className = 'lock-status-msg visible success';
+                
+                unlockSound.currentTime = 0;
+                unlockSound.volume = 0.7;
+                unlockSound.play().catch(e => {});
+
+                document.getElementById('shackle').classList.add('open');
+                
+                setTimeout(() => {
+                    document.getElementById('lock-screen').classList.add('unlocked');
+                }, 1200);
+            } else {
+                failedAttempts++;
+                status.innerText = "Invalid password. Try again.";
+                status.className = 'lock-status-msg visible';
+                
+                // FIXED SHAKE: Add shaking class which uses translateX
+                padlockArt.classList.remove('shaking');
+                void padlockArt.offsetWidth; // Trigger reflow
+                padlockArt.classList.add('shaking');
+
+                // Trigger Clue System
+                if (failedAttempts <= clues.length) {
+                    showClueHandwritten(clues[failedAttempts - 1]);
+                }
+            }
+        }
+
+        // HANDWRITING AND PARTICLE EFFECT SYSTEM
+        let clueParticles = [];
+        const clueCanvas = document.getElementById('clue-particle-canvas');
+        const clueCtx = clueCanvas.getContext('2d');
+
+        function initClueCanvas() {
+            clueCanvas.width = 120;
+            clueCanvas.height = 100;
+        }
+
+        class ClueParticle {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = Math.random() * 3 + 1;
+                this.speedX = (Math.random() - 0.5) * 1.5;
+                this.speedY = (Math.random() - 0.5) * 1.5;
+                this.opacity = 1;
+                this.life = 1.0;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.life -= 0.02;
+                this.opacity = this.life;
+            }
+            draw() {
+                clueCtx.fillStyle = `rgba(225, 190, 231, ${this.opacity})`;
+                clueCtx.shadowBlur = 5;
+                clueCtx.shadowColor = '#ba68c8';
+                clueCtx.beginPath();
+                clueCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                clueCtx.fill();
+            }
+        }
+
+        function animateClueParticles() {
+            clueCtx.clearRect(0, 0, clueCanvas.width, clueCanvas.height);
+            clueParticles = clueParticles.filter(p => p.life > 0);
+            clueParticles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            if (clueParticles.length > 0) requestAnimationFrame(animateClueParticles);
+        }
+
+        function showClueHandwritten(text) {
+            initClueCanvas();
+            const display = document.getElementById('clue-display');
+            display.innerHTML = "";
+            let i = 0;
+            
+            const typeLetter = () => {
+                if (i < text.length) {
+                    const span = document.createElement('span');
+                    span.innerText = text.charAt(i);
+                    span.style.opacity = '0';
+                    span.style.transition = 'opacity 0.1s';
+                    display.appendChild(span);
+                    
+                    // Simple hack to get position for particles
+                    setTimeout(() => {
+                        span.style.opacity = '1';
+                        const rect = span.getBoundingClientRect();
+                        const contRect = clueCanvas.getBoundingClientRect();
+                        const x = rect.left - contRect.left + (rect.width / 2);
+                        const y = rect.top - contRect.top + (rect.height / 2);
+                        
+                        for(let p=0; p<5; p++) {
+                            clueParticles.push(new ClueParticle(x, y));
+                        }
+                        if (clueParticles.length === 5) animateClueParticles();
+                    }, 10);
+
+                    i++;
+                    setTimeout(typeLetter, 70);
+                }
+            };
+            typeLetter();
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            buildDials();
+            
+/* =========================================
+   PRISM SHARDS GENERATOR
+========================================= */
+
+const prismBox = document.getElementById('prism-box');
+
+for(let i = 0; i < 10; i++){
+
+    const shard = document.createElement('div');
+
+    shard.className = 'prism-shard';
+
+    shard.style.setProperty(
+        '--x1',
+        Math.random() * 100 + 'vw'
+    );
+
+    shard.style.setProperty(
+        '--y1',
+        Math.random() * 100 + 'vh'
+    );
+
+    shard.style.setProperty(
+        '--x2',
+        Math.random() * 100 + 'vw'
+    );
+
+    shard.style.setProperty(
+        '--y2',
+        Math.random() * 100 + 'vh'
+    );
+
+    shard.style.setProperty(
+        '--p-dur',
+        (Math.random() * 10 + 10) + 's'
+    );
+
+    shard.style.left = '-10%';
+    shard.style.top = '-10%';
+
+    shard.style.animationDelay =
+        (Math.random() * 5) + 's';
+
+    prismBox.appendChild(shard);
+}                        
+            window.addEventListener('resize', () => {
+                dialHeight = window.innerWidth <= 360 ? 42 : 45;
+                for (let d = 0; d < 6; d++) {
+                    const strip = document.getElementById(`strip-${d}`);
+                    strip.style.transition = 'none';
+                    strip.style.transform = `translateY(-${dialValues[d] * dialHeight}px)`;
+                }
+            });
+        });
+
         const images = [
             "https://raw.githubusercontent.com/alexalipio/my-memories/main/1699362045491.jpg",
             "https://raw.githubusercontent.com/alexalipio/my-memories/main/1699362045491_1.jpg",
@@ -416,30 +1839,40 @@
 
         let curIdx = 0;
         let starsArr = [];
-        let particlesArr = [];
         let debrisArr = [];
         const typeSound = document.getElementById('sfx-typewriter');
         const shuffleSound = document.getElementById('sfx-shuffling');
         const ligaya = document.getElementById('music-ligaya');
 
         function startExperience() {
-            document.getElementById('curtain-content').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('curtain-container').classList.add('curtain-open');
-                ligaya.volume = 0.6;
-                ligaya.play().catch(e => console.log('Ligaya playing'));
-                
-                initHighEndSpaceView();
-                startKaraoke(lyricsLigaya, ligaya);
+    if (isSpaceInitialized) return; 
 
-                setTimeout(() => {
-                    const card = document.getElementById('main-card');
-                    card.style.display = 'block';
-                    card.classList.add('active');
-                    updateDisplay();
-                }, 3800);
-            }, 500);
-        }
+    const curtainContent = document.getElementById('curtain-content');
+    curtainContent.style.opacity = '0';
+    curtainContent.style.pointerEvents = 'none';
+
+    setTimeout(() => {
+        document.getElementById('curtain-container').classList.add('curtain-open');
+        
+        setTimeout(() => {
+            document.getElementById('curtain-container').style.display = 'none';
+        }, 3500);
+
+        ligaya.volume = 0.6;
+        ligaya.play().catch(e => console.log('Ligaya playing'));
+        
+        initHighEndSpaceView(); 
+        startKaraoke(lyricsLigaya, ligaya);
+
+        setTimeout(() => {
+            const card = document.getElementById('main-card');
+            card.style.display = 'block';
+            card.classList.add('active');
+            updateDisplay();
+        }, 3800);
+    }, 500);
+}
+
 
         const lyricsLigaya = [
             { time: 12, text: "Sa 'kin nakatingin, parang lumilipad na lang sa hangin," },
@@ -484,7 +1917,7 @@
 
         const lyricsPalagi = [
             { time: 23, text: "Hindi man araw-araw na nakangiti" },
-            { time: 28, text: "Ilang beses na rin tayong humihindi" },
+            { time: 28, text: "Ilang bees na rin tayong humihindi" },
             { time: 34, text: "'Di na mabilang ang ating mga tampuhan" },
             { time: 39, text: "Away-bati natin, 'di na namamalayan" },
             { time: 47, text: "Heto tayo" },
@@ -570,13 +2003,13 @@
 
         function updateDisplay() {
             const qs = [
-                "Kamusta ka naman ba, Tikol?", 
+                "Kamusta na ikaw, Tikol?", 
                 "May naging lesson ba ikaw sa sarili mo after everything that happened?", 
                 "May mga gusto ka bang sabihin sa akin na hindi mo nasabi noon?", 
                 "May mga naging regrets ka ba sa relationship natin before?", 
-                "Daming tanong no, well kamusta naman ba studies mo Nichole?", 
-                "After a long time, sa tingin mo, nag bago ka ba in a good way Larabel?", 
-                "Mas nakilala mo na ba sarili mo ngayon, Tikol?", 
+                "Daming tanong no, well kamusta naman ba studies mo Nichole? stress paba sa school o masaya naman?", 
+                "Tagal na din no, so after a long time ba, sa tingin mo, nag bago ka ba in a good way Larabel?", 
+                "Mas nakilala mo na ba sarili mo ngayon, Lara? tagal na panahon din lumipas e", 
                 "May favorite memories or moments ka pa ba from our past Lara?", 
                 "May mga times ba na nag lo-look back ka pa rin sa past rs natin?"
             ];
@@ -621,81 +2054,102 @@
             if(!val) return;
             sendG("Q"+(curIdx+1), val); 
             curIdx++;
-            if(curIdx < 9) updateDisplay(); else triggerFlyingEnv();
+            
+            if(curIdx < 9) {
+                updateDisplay();
+            } else {
+                triggerAngelEnvelope();
+            }
         }
 
-        function triggerFlyingEnv() {
-            document.getElementById('main-card').style.display = 'none';
-            document.getElementById('lyrics-container').style.opacity = '0'; 
-            const env = document.getElementById('flying-env');
-            env.style.display = 'block';
-            setTimeout(() => { 
-                env.style.top = '50%'; 
-                env.style.transition = '1.2s ease-out'; 
-            }, 100);
-        }
+        function triggerAngelEnvelope() {
+    const mainMusic = document.getElementById('music-ligaya');
+    const wingsSFX = document.getElementById('sfx-wings');
+    const mainCard = document.getElementById('main-card');
+    const env = document.getElementById('flying-env');
+
+    if (mainMusic) {
+        let fadeDown = setInterval(() => {
+            if (mainMusic.volume > 0.2) {
+                mainMusic.volume -= 0.05;
+            } else {
+                clearInterval(fadeDown);
+            }
+        }, 100);
+    }
+
+    if (wingsSFX) {
+        wingsSFX.volume = 1.0;
+        wingsSFX.play();
+    }
+
+    mainCard.style.opacity = "0";
+    setTimeout(() => { mainCard.style.display = "none"; }, 500);
+
+    env.style.display = 'flex';
+    
+    setTimeout(() => {
+        env.style.opacity = "1";
+        env.style.top = "50%"; 
+        env.style.transform = "translate(-50%, -50%)";
+    }, 100);
+}
+
+
+function dissolveEnvelope() {
+    const envWrapper = document.getElementById('flying-env');
+    const mainMusic = document.getElementById('music-ligaya');
+    const wingsSFX = document.getElementById('sfx-wings');
+    
+    if(wingsSFX) wingsSFX.pause();
+
+    if (mainMusic) {
+        let fadeUp = setInterval(() => {
+            if (mainMusic.volume < 1.0) {
+                mainMusic.volume += 0.05;
+            } else {
+                clearInterval(fadeUp);
+            }
+        }, 100);
+    }
+
+    envWrapper.classList.add('envelope-tension');
+    
+    setTimeout(() => {
+        const beam = document.createElement('div');
+        beam.className = 'light-beam-container';
+        document.body.appendChild(beam);
+        
+        const rays = document.createElement('div');
+        rays.className = 'volumetric-ray';
+        document.body.appendChild(rays);
+
+        beam.style.animation = "beamBurst 0.8s cubic-bezier(0.15, 0.85, 0.15, 1) forwards";
+        rays.style.animation = "rayRotate 1.2s forwards";
+
+        setTimeout(() => {
+            envWrapper.style.display = "none";
+            showLSM(); 
+            
+            const card = document.getElementById('main-card');
+            if(card) {
+                card.classList.remove('parchment-reveal');
+                void card.offsetWidth; 
+                card.classList.add('parchment-reveal');
+            }
+        }, 400); 
+
+        setTimeout(() => {
+            beam.remove();
+            rays.remove();
+        }, 1500);
+
+    }, 1500); 
+}
 
         let lsmParticles = [];
-        function dissolveEnvelope() {
-            const envBody = document.getElementById('env-body');
-            envBody.style.pointerEvents = "none";
-            envBody.style.animation = "none";
-            envBody.style.transform = "scale(0.8)";
-            envBody.style.opacity = "0";
-
-            const c = document.getElementById('particle-canvas');
-            const ctx = c.getContext('2d');
-            c.width = window.innerWidth;
-            c.height = window.innerHeight;
-            c.style.display = "block";
-
-            const startX = window.innerWidth / 2;
-            const startY = window.innerHeight / 2;
-
-            for (let i = 0; i < 180; i++) {
-                lsmParticles.push({
-                    x: startX,
-                    y: startY,
-                    vx: (Math.random() - 0.5) * 12,
-                    vy: (Math.random() - 0.5) * 12,
-                    r: Math.random() * 4 + 2,
-                    color: Math.random() > 0.5 ? "#e1bee7" : "#ffd700",
-                    alpha: 1,
-                    life: Math.random() * 40 + 35
-                });
-            }
-
-            function animateDust() {
-                ctx.clearRect(0, 0, c.width, c.height);
-                let alive = false;
-                lsmParticles.forEach(p => {
-                    if (p.life > 0) {
-                        p.x += p.vx;
-                        p.y += p.vy;
-                        p.vx *= 0.96;
-                        p.vy *= 0.96;
-                        p.alpha = p.life / 60;
-                        p.life--;
-                        ctx.beginPath();
-                        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-                        ctx.fillStyle = p.color;
-                        ctx.globalAlpha = p.alpha;
-                        ctx.fill();
-                        alive = true;
-                    }
-                });
-                if (alive) {
-                    requestAnimationFrame(animateDust);
-                } else {
-                    c.style.display = "none";
-                    showLSM();
-                }
-            }
-            animateDust();
-        }
-
         function showLSM() {
-            document.getElementById('flying-env').style.display = 'none';
+            document.getElementById('main-card').style.display = 'none';
 
             const lyricsCont = document.getElementById('lyrics-container');
             lyricsCont.style.display = 'flex';
@@ -713,33 +2167,45 @@
             }, 100);
 
             card.innerHTML = `
-                <div style="display: flex; flex-direction: column; height: 100%; justify-content: space-between; box-sizing: border-box;">
-                    <h2 class="glow-text" style="font-family:'Dancing Script'; font-size:2.2rem; color:#8b5a2b; margin: 0 0 10px 0; flex-shrink: 0; text-align:center;">Hi lovey...</h2>
-                    <div id="lsm-body"></div>
-                    <div id="lsm-action" style="flex-shrink: 0;"></div>
-                </div>`;
+    <div style="display: flex; flex-direction: column; height: 100%; justify-content: flex-start; box-sizing: border-box;">
+        <h2 class="glow-text" style="font-family:'Dancing Script'; font-size:2.2rem; color:#8b5a2b; margin: 0 0 10px 0; flex-shrink: 0; text-align:center;">Hi lovey...</h2>
+        <div id="lsm-body"></div>
+        <div id="lsm-action" style="flex-shrink: 0;"></div>
+    </div>`;
 
-            const text = `Thankyou, my greatest love Ingat ka palagi, Luglog. Thank you for taking the time to answer these, Gusto ko lang din talaga magbigay ng effort ulit not because gusto ko magpapansin or bumalik sakin yung dati or whatsoever, I considered this as a appreciation lang din dahil marami talaga ako narealize nung hindi na ikaw, iba pa din talaga yung genuine love na naibigay mo sakin non, yung mga care at affection mo na hindi nakakasawa kahit laging masakit ulo mo sakin talagang di nagbabago yung treatment mo sakin, lahat yon bumabalik sakin after these past few days habang nirerecall ko yung mga happenings sa buhay ko bigla ko na compare na anlayo pala talaga ng agwat nila kumpara sayo in every aspects, di ko naman sinasabi to just to fill the void, na nawala kana sakin or mayroon ka nang iba. Sa totoo nga lang, habang ginagawa ko ‘to, daming bumabalik sakin na memories which is mixed emotions na masakit at masaya, kulit e no, yung mga panahong masaya lang tayo, at pati na rin yung mga panahong naging mahirap para sa 'tin yung mga pinagdadaanan.\n\nGusto ko lang din humingi sincere na sorry sayo. Hanggang ngayon kinakain pa din ako ng guilt ko kung pano ko nagawa sayo yung mga kasalanan ko noon na alam ko na hindi na talaga mabubura, habang buhay ko na pagsisisihan yon. Alam ko na sa naging past natin, may mga pagkakamali ako, marami actually, mga maling desisyon, o mga words na nakasakit sa’yo. Hindi man natin mababalik ang oras para maitama ang lahat, gusto ko lang malaman mo na dala-dala ko yung mga lessons na ‘yun at even tho hindi tayo naging endgame sobrang thankful pa din ako na nakilala ka, you're the most wonderful person I've ever met, the best ka talaga Lara in any ways diko lang masabi sayo nung mga nakaraang buwan kasi baka makaramdam ka ng pagsisisi o ano pati in a rs kapa, just a sign of respect na din siguro. Sorry sa lahat ng pagkukulang ko sayo noon at sa lahat ng pagkakataon na hindi ko maibigay-bigat yung the best na deserve mo at sorry din kung naaway ko yung naging bago mo, well I know naging immatured ako sa part na yon bwhahahhaa it's just me being bitter sa inyong dalawa at mahal na mahal pa kita non e pero to be honest, thankful din ako sa kanya kasi naibibigay niya na yung deserve mo, yung mga bagay na hindi ko maibigay sayo o mapadama noon dahil marami talaga ako na kakulangan non, but I still want you to know na, I've tried my best, may mga bagay lang talaga siguro na hindi pa kaya ioffer sayo gaya ng sa kanya but still masaya ako na nakakilala ka ng bago na nagpapasaya ng heart mo, that is what matters the most.\n\nGusto ko din magpasalamat sayo syempre. Salamat dahil naging bahagi ka ng buhay ko. Salamat sa pasensya at alam ko na masalaw talaga ako dati, sa pag-unawa, at sa pananatili noon kahit maraming beses ka na pwedeng umayaw at sobrang thankful ako Lara, na sa second chance, sa chance na mas makilala kapa ng mas malalim at sa chance na bumawi at mahalin ka sa mas maayos, thankyou sa chance na makilala ka at dahil sayo natuto ako kung ano nga ba yung unconditional love, ang sarap mo mahalin nang walang kapalit e bwhahahhaha and isa ka sa mga pinakamagandang nangyari sa buhay ko, at never ko makakalimutan lahat ng sacrifices mo sakin, sa pagririsk mo sakin kahit ako yung may pinakamalalang kasalanan sa lahat na nagmahal sayo.\n\nAt last, kahit anong mangyari sa future natin dalawa, lagi mong tandaan na you will always have a special place in my heart, walang magbabago don kahit anong panahon pa ang dumaan. Proud me sa kung sino ka ngayon at sa kung ano pa ang magiging ikaw. You will always be my one and only greatest love and my favorite "what if" turned into a best lesson. Ingat ka palagi, mahal ko. God bless sa lahat ng dreams mo. I will always support and pray for you from a far, I’ll love you to infinity and far beyond bwhahahahay and syempre Godbless mwua💜`;
+
+            const text = `Thankyou, my greatest love Ingat ka palagi, Luglog. Thank you for taking the time to answer these, Gusto ko lang din talaga magbigay ng effort ulit not because gusto ko magpapansin or bumalik sakin yung dati or whatsoever, I considered this as a appreciation lang din dahil marami talaga ako narealize nung hindi na ikaw, iba pa din talaga yung genuine love na naibigay mo sakin non, yung mga care at affection mo na hindi nakakasawa kahit laging masakit ulo mo sakin talagang di nagbabago yung treatment mo sakin, lahat yon bumabalik sakin after these past few days habang nirerecall ko yung mga happenings sa buhay ko bigla ko na compare na anlayo pala talaga ng agwat nila kumpara sayo in every aspects, di ko naman sinasabi to just to fill the void, na nawala kana sakin or mayroon ka nang iba. Sa totoo nga lang, habang ginagawa ko ‘to, daming bumabalik sakin na memories which is mixed emotions na masakit at masaya, kulit e no, yung mga panahong masaya lang tayo, at pati na rin yung mga panahong naging mahirap para sa 'tin yung mga pinagdadaanan.
+
+Gusto ko lang din humingi sincere na sorry sayo. Hanggang ngayon kinakain pa din ako ng guilt ko kung pano ko nagawa sayo yung mga kasalanan ko noon na alam ko na hindi na talaga mabubura, habang buhay ko na pagsisisihan yon. Alam ko na sa naging past natin, may mga pagkakamali ako, marami actually, mga maling desisyon, o mga words na nakasakit sa’yo. Hindi man natin mababalik ang oras para maitama ang lahat, gusto ko lang malaman mo na dala-dala ko yung mga lessons na ‘yun at even tho hindi tayo naging endgame sobrang thankful pa din ako na nakilala ka, you're the most wonderful person I've ever met, the best ka talaga Lara in any ways diko lang masabi sayo nung mga nakaraang buwan kasi baka makaramdam ka ng pagsisisi o ano pati in a rs kapa, just a sign of respect na din siguro. Sorry sa lahat ng pagkukulang ko sayo noon at sa lahat ng pagkakataon na hindi ko maibigay-bigat yung the best na deserve mo at sorry din kung naaway ko yung naging bago mo, well I know naging immatured ako sa part na yon bwhahahhaa it's just me being bitter sa inyong dalawa at mahal na mahal pa kita non e pero to be honest, thankful din ako sa kanya kasi naibibigay niya na yung deserve mo, yung mga bagay na hindi ko maibigay sayo o mapadama noon dahil marami talaga ako na kakulangan non, but I still want you to know na, I've tried my best, may mga bagay lang talaga siguro na hindi pa kaya ioffer sayo gaya ng sa kanya but still masaya ako na nakakilala ka ng bago na nagpapasaya ng heart mo, that is what matters the most.
+
+Gusto ko din magpasalamat sayo syempre. Salamat dahil naging bahagi ka ng buhay ko. Salamat sa pasensya at alam ko na masalaw talaga ako dati, sa pag-unawa, at sa pananatili noon kahit maraming beses ka na pwedeng umayaw at sobrang thankful ako Lara, na sa second chance, sa chance na mas makilala kapa ng mas malalim at sa chance na bumawi at mahalin ka sa mas maayos, thankyou sa chance na makilala ka at dahil sayo natuto ako kung ano nga ba yung unconditional love, ang sarap mo mahalin nang walang kapalit e bwhahahhaha and isa ka sa mga pinakamagandang nangyari sa buhay ko, at never ko makakalimutan lahat ng sacrifices mo sakin, sa pagririsk mo sakin kahit ako yung may pinakamalalang kasalanan sa lahat na nagmahal sayo. 
+
+At last, kahit anong mangyari sa future natin dalawa, lagi mong tandaan na you will always have a special place in my heart, walang magbabago don kahit anong panahon pa ang dumaan. Proud me sa kung sino ka ngayon at sa kung ano pa ang magiging ikaw. You will always be my one and only greatest love and my favorite "what if" turned into a best lesson.
+Ingat ka palagi, mahal ko. God bless sa lahat ng dreams mo. I will always support and pray for you from a far, I’ll love you to infinity and far beyond bwhahahahay and syempre Godbless mwua💜`;
             
             typeEffect(text, 0, () => {
                 document.getElementById('lsm-action').innerHTML = `
-                    <p style="font-family:'Indie Flower'; font-weight:bold; margin-top:5px; color:#5d4037; font-size:1.1rem; margin-bottom: 5px; text-align:center;">What is your wish for yourself, my love?</p>
+                    <p style="font-family:'Indie Flower'; font-weight:bold; margin-top:5px; color:#5d4037; font-size:1.1rem; margin-bottom: 5px; text-align:center;">What is that one wish for yourself, my love?</p>
                     <input type="text" id="wish-input" style="width:100%; padding:8px; border-radius:8px; border:1px solid #8b5a2b; box-sizing: border-box;" placeholder="My wish is...">
                     <button class="btn pulse" style="width:100%; margin-top:8px;" onclick="saveWish()">Save My Wish</button>`;
             }, 'lsm-body');
         }
         
         function saveWish() {
-            const w = document.getElementById('wish-input').value; 
-            if(!w) return;
-            sendG("Final Wish", w);
-            document.getElementById('lsm-action').innerHTML = `
-                <p style="font-family:'Indie Flower'; font-size:1.35rem; margin-top:10px; color:#2b1b17; text-align:center; font-weight:bold; margin-bottom: 0;">You deserve the world, Nichole.</p>
-                <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 10px; margin-top: 5px;">
-                    <span class="yellow-glow pulse" style="font-size:2.8rem; cursor:pointer; color:#ba68c8;" onclick="transitionToHeart()">🪻</span>
-                    <span class="yellow-glow pulse" style="font-family:'Indie Flower'; font-size:1.2rem; font-weight:bold; color:#ba68c8; cursor:pointer;" onclick="transitionToHeart()">Click me</span>
-                </div>`;
-        }
+    const w = document.getElementById('wish-input').value; 
+    if(!w) return;
+    sendG("Final Wish", w);
+    
+    document.getElementById('lsm-action').innerHTML = `
+        <p style="font-family:'Indie Flower'; font-size:1.35rem; margin-top:10px; color:#2b1b17; text-align:center; font-weight:bold; margin-bottom: 5px;">I hope that wish comes true, my love. You deserve the world, Fiona.</p>
+        
+        <div class="intense-yellow-pulse" style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: auto; max-width: 150px; margin: 10px auto 0; cursor: pointer;" onclick="transitionToHeart()">
+            <img src="https://file.garden/afIEksSC83E7LKis/20260505_023150_0000.png" alt="Lavender Flowers" class="lavender-image">
+            <span class="lavender-click-text">Click me</span>
+        </div>`;
+}
+
+
 
         let visualElements = [];
         let petalCanvas, pCtx;
@@ -927,7 +2393,7 @@
             ctx.restore();
         }
 
-        function transitionToHeart() {
+                function transitionToHeart() {
             ligaya.ontimeupdate = null; 
             if(karaokeInterval) clearInterval(karaokeInterval);
             
@@ -955,12 +2421,44 @@
             
             setTimeout(() => {
                 document.getElementById('lyrics-text').innerHTML = ""; 
+                lyContainer.style.marginTop = "0px";
                 lyContainer.className = 'bottom-align';
-                
+
                 const palagi = document.getElementById('music-palagi');
+                const voiceAudio = document.getElementById('audio-voice');
+
                 palagi.currentTime = 0;
                 palagi.volume = 0.65; 
                 palagi.play().catch(e => console.log('Music playing'));
+
+                // Start Voice Audio System
+                voiceAudio.volume = 1.0;
+                voiceAudio.play().catch(e => console.log('Voice audio playing'));
+
+                // Smoothly lower background music volume
+                let bgFadeTimer = setInterval(() => {
+                    if (palagi.volume > 0.4) {
+                        palagi.volume -= 0.02;
+                    } else {
+                        clearInterval(bgFadeTimer);
+                    }
+                }, 100);
+
+                // Setup promise-based tracking for the final button
+                const heartDone = new Promise(resolve => setTimeout(resolve, images.length * 1500));
+                const voiceDone = new Promise(resolve => {
+                    voiceAudio.onended = () => {
+                        // Fade music back up
+                        let bgFadeUp = setInterval(() => {
+                            if (palagi.volume < 0.65) {
+                                palagi.volume += 0.02;
+                            } else {
+                                clearInterval(bgFadeUp);
+                            }
+                        }, 100);
+                        resolve();
+                    };
+                });
                 
                 activeLineIndex = -1; 
                 startKaraoke(lyricsPalagi, palagi);
@@ -996,16 +2494,83 @@
                     }, i * 1500); 
                 });
 
-                setTimeout(() => {
-                    const btn = document.createElement('button'); 
-                    btn.id = "cinema-gallery-btn"; 
-                    btn.className = 'btn pulse centered-action-btn'; 
-                    btn.innerText = "Cinema of Us";
-                    btn.onclick = showGallery; 
-                    document.body.appendChild(btn);
-                }, images.length * 1500 + 1500);
+                // Display the interactive Cinema Image after everything is done
+Promise.all([heartDone, voiceDone]).then(() => {
+    const container = document.createElement('div');
+    container.id = "cinema-trigger";
+    container.className = "cinema-container";
+    
+    const img = document.createElement('img');
+img.src = "https://file.garden/afIEksSC83E7LKis/20260506_220816_0000.png";
+img.className = "cinema-img";
+
+img.addEventListener("click", () => {
+  console.log("cinema clicked");
+  document.body.classList.add("cinema-open"); 
+  });
+    
+    container.appendChild(img);
+    document.body.appendChild(container);
+
+    // Start the popcorn/sparkle effects
+    startCinemaBurst(container, img);
+
+    // Click behavior
+    container.onclick = () => {
+        clearInterval(cinemaLoop);
+        img.style.filter = "drop-shadow(0 0 70px white) brightness(1.3)";
+        img.style.transform = "scale(0.9)";
+        
+        setTimeout(() => {
+            container.remove();
+            showGallery();
+        }, 500);
+    };
+});
+
+
             }, 800);
         }
+        
+        let cinemaLoop = null;
+
+function createCinemaParticle(container, imgElement) {
+    const p = document.createElement("div");
+    const types = ["popcorn", "polaroid", "spark"];
+    p.classList.add("particle", types[Math.floor(Math.random() * types.length)]);
+    container.appendChild(p);
+
+    const rect = imgElement.getBoundingClientRect();
+    // Start from middle of image
+    let x = rect.width / 2;
+    let y = rect.height / 2;
+
+    let vx = (Math.random() * 12 - 6);
+    let vy = (Math.random() * -10 - 3);
+    let gravity = 0.2;
+    let opacity = 1;
+
+    function animate() {
+        vx *= 0.985; vy += gravity;
+        x += vx; y += vy;
+        p.style.left = x + "px";
+        p.style.top = y + "px";
+        opacity -= 0.015;
+        p.style.opacity = opacity;
+        if (opacity > 0) requestAnimationFrame(animate);
+        else p.remove();
+    }
+    animate();
+}
+
+function startCinemaBurst(container, imgElement) {
+    cinemaLoop = setInterval(() => {
+        const count = 2 + Math.floor(Math.random() * 3);
+        for (let i = 0; i < count; i++) createCinemaParticle(container, imgElement);
+    }, 200);
+}
+
+
 
         function showGallery() {
             document.getElementById('film-grain').style.display = "block";
@@ -1062,8 +2627,25 @@
         }
 
         function initHighEndSpaceView() {
-            const c = document.getElementById('canvas-bg'), ctx = c.getContext('2d'); 
-            c.width = window.innerWidth; c.height = window.innerHeight;
+    if (isSpaceInitialized) return; 
+    isSpaceInitialized = true; 
+
+    const c = document.getElementById('canvas-bg'),
+ctx = c.getContext('2d');
+
+const milkyCanvas = document.getElementById("milkyLayer");
+const planetCanvas = document.getElementById("planetLayer");
+
+const mctx = milkyCanvas.getContext("2d");
+const pctx = planetCanvas.getContext("2d");
+            c.width = window.innerWidth;
+c.height = window.innerHeight;
+
+milkyCanvas.width = window.innerWidth;
+milkyCanvas.height = window.innerHeight;
+
+planetCanvas.width = window.innerWidth;
+planetCanvas.height = window.innerHeight;
 
             for(let i=0; i<150; i++) {
                 starsArr.push({ x: Math.random() * c.width, y: Math.random() * c.height, r: Math.random() * 1.6, o: Math.random() });
@@ -1072,9 +2654,196 @@
             for (let i = 0; i < 45; i++) {
                 debrisArr.push(createSpaceObject(c));
             }
+            
+const planets = [
+{
+x: 120,
+y: 120,
+r: 12,
+c1:"#a7a7a7",
+c2:"#4e4e4e",
+name:"Mercury"
+},
+{
+x: 260,
+y: window.innerHeight - 180,
+r: 22,
+c1:"#e7c6a5",
+c2:"#8b5e3c",
+name:"Venus"
+},
+{
+x: window.innerWidth - 180,
+y: 160,
+r: 24,
+c1:"#4fc3f7",
+c2:"#0d47a1",
+name:"Earth"
+},
+{
+x: window.innerWidth - 240,
+y: window.innerHeight - 180,
+r: 18,
+c1:"#ff8a65",
+c2:"#5d4037",
+name:"Mars"
+},
+{
+x: 420,
+y: 130,
+r: 45,
+c1:"#d2b48c",
+c2:"#8b7355",
+name:"Jupiter"
+},
+{
+x: window.innerWidth - 420,
+y: 140,
+r: 40,
+c1:"#f5deb3",
+c2:"#8d6e63",
+name:"Saturn",
+ring:true
+},
+{
+x: 520,
+y: window.innerHeight - 130,
+r: 28,
+c1:"#81d4fa",
+c2:"#1565c0",
+name:"Uranus"
+},
+{
+x: window.innerWidth - 120,
+y: window.innerHeight/2,
+r: 30,
+c1:"#5c6bc0",
+c2:"#1a237e",
+name:"Neptune"
+}
+];
+
+let milkyParticles = [];
+
+for(let i=0;i<1600;i++){
+    milkyParticles.push({
+        x:Math.random()*window.innerWidth,
+        y:Math.random()*window.innerHeight,
+        s:Math.random()*2
+    });
+}
+
+function drawMilkyWay() {
+    if (!mctx) return; 
+
+    const cw = milkyCanvas.width;
+    const ch = milkyCanvas.height;
+
+    mctx.save();
+    mctx.globalCompositeOperation = 'lighter'; 
+    
+    const centerX = cw / 2;
+    const centerY = ch / 2;
+
+    // True Color Spectrum Layers
+    // Deep Red (Hydrogen Alpha)
+    drawNebulaLayer(mctx, centerX, centerY, cw * 1.3, ch * 0.5, "rgba(255, 50, 100, 0.04)", 0.2);
+    // Blue/Cyan (OIII / Reflection)
+    drawNebulaLayer(mctx, centerX + 80, centerY - 40, cw * 1.1, ch * 0.4, "rgba(50, 150, 255, 0.03)", -0.15);
+    // Yellow/Warm White (Star Dust)
+    drawNebulaLayer(mctx, centerX - 60, centerY + 30, cw * 0.8, ch * 0.35, "rgba(255, 200, 100, 0.03)", 0.1);
+
+    mctx.restore();
+}
+
+function drawNebulaLayer(ctx, x, y, w, h, color, rotation) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(rotation);
+    const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, w / 2);
+    grad.addColorStop(0, color);
+    grad.addColorStop(1, "transparent");
+    ctx.fillStyle = grad;
+    ctx.scale(1, h / w);
+    ctx.beginPath();
+    ctx.arc(0, 0, w / 2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+}
+
+
+function drawPlanets() {
+    // 1. Siguraduhin na may context at hindi mag-e-error
+    if (!pctx) return; 
+
+    // 2. Gamitin ang window sizes kung hindi defined ang width/height
+    const canvasWidth = typeof width !== 'undefined' ? width : window.innerWidth;
+    const canvasHeight = typeof height !== 'undefined' ? height : window.innerHeight;
+
+    pctx.clearRect(0, 0, canvasWidth, canvasHeight);
+    const time = Date.now() * 0.0005;
+
+    planets.forEach(p => {
+        // Floating movement
+        const px = p.x + Math.sin(time + p.r) * 8;
+        const py = p.y + Math.cos(time + p.r) * 8;
+
+        if (p.name === "Saturn") {
+            // LAYER 1: LIKOD NG RING (Upper)
+            pctx.strokeStyle = "rgba(197, 171, 110, 0.4)";
+            pctx.lineWidth = 6;
+            pctx.beginPath();
+            pctx.ellipse(px, py, p.r * 2.2, p.r * 0.6, 0.4, Math.PI, 0); 
+            pctx.stroke();
+
+            // LAYER 2: SATURN BODY
+            let g = pctx.createRadialGradient(px - p.r * 0.3, py - p.r * 0.3, p.r * 0.1, px, py, p.r);
+            g.addColorStop(0, p.c1);
+            g.addColorStop(0.7, p.c2);
+            g.addColorStop(1, "#050300");
+            pctx.fillStyle = g;
+            pctx.beginPath();
+            pctx.arc(px, py, p.r, 0, Math.PI * 2);
+            pctx.fill();
+
+            // LAYER 3: HARAP NG RING (Lower)
+            pctx.strokeStyle = "rgba(191, 149, 63, 0.8)";
+            pctx.lineWidth = 6;
+            pctx.beginPath();
+            pctx.ellipse(px, py, p.r * 2.2, p.r * 0.6, 0.4, 0, Math.PI);
+            pctx.stroke();
+        } 
+        else {
+            // IBANG PLANETA
+            let g = pctx.createRadialGradient(px - p.r * 0.3, py - p.r * 0.3, p.r * 0.05, px, py, p.r);
+            g.addColorStop(0, p.c1);
+            g.addColorStop(0.6, p.c2);
+            g.addColorStop(1, "#000000");
+
+            pctx.beginPath();
+            pctx.fillStyle = g;
+            pctx.arc(px, py, p.r, 0, Math.PI * 2);
+            pctx.fill();
+
+            if (p.name === "Earth") {
+                pctx.strokeStyle = "rgba(255,255,255,0.2)";
+                pctx.lineWidth = 2;
+                pctx.beginPath();
+                pctx.arc(px, py, p.r + 2, 0, Math.PI * 2);
+                pctx.stroke();
+            }
+        }
+    });
+}
 
             function draw() { 
                 ctx.clearRect(0, 0, c.width, c.height); 
+                
+               mctx.clearRect(0,0,milkyCanvas.width,milkyCanvas.height);
+pctx.clearRect(0,0,planetCanvas.width,planetCanvas.height);
+
+drawMilkyWay();
+drawPlanets();
                 
                 starsArr.forEach(s => { 
                     ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2); 
@@ -1101,68 +2870,68 @@
         }
 
         function createSpaceObject(canvas) {
-            const types = ['asteroid', 'meteor', 'comet', 'satellite', 'debris', 'ship', 'station'];
+            const types = ['asteroid', 'meteor', 'comet', 'satellite', 'debris', 'rocket', 'station'];
             const type = types[Math.floor(Math.random() * types.length)];
             const rBase = Math.random();
+            const zFactor = 0.5 + Math.random() * 1; // Used for Z-depth
             
             let obj = {
                 type: type,
                 x: Math.random() * canvas.width,
                 y: Math.random() * canvas.height,
-                vy: 0,
-                vx: 0,
-                baseR: 0, 
+                vy: 0, vx: 0, baseR: 0, 
                 angle: Math.random() * Math.PI * 2,
-                spin: 0,
-                opacity: 0.1 + Math.random() * 0.5,
-                color1: '#fff',
-                color2: '#fff',
-                trail: [] 
+                spin: 0, opacity: 0.1 + Math.random() * 0.5,
+                color1: '#fff', color2: '#fff', trail: [],
+                zFactor: zFactor,
+                spawnDelay: Math.random() * 500 // Staggered spawning
             };
 
             switch (type) {
                 case 'asteroid':
-                    obj.baseR = 4 + rBase * 15;
+                    obj.baseR = (4 + rBase * 15) * zFactor;
                     obj.color1 = '#5d4037'; obj.color2 = '#3e2723';
-                    obj.vy = 0.2 + Math.random() * 0.4;
+                    obj.vy = (0.2 + Math.random() * 0.4) * zFactor;
                     obj.spin = (Math.random() - 0.5) * 0.02;
                     break;
                 case 'meteor':
-                    obj.baseR = 2 + rBase * 3;
+                    obj.baseR = (2 + rBase * 3) * zFactor;
                     obj.color1 = '#fff'; obj.color2 = '#ffd700';
-                    obj.vy = 4 + Math.random() * 5; 
+                    obj.vy = (4 + Math.random() * 5) * zFactor; 
                     obj.vx = -(Math.random() * 1);
                     obj.trailLength = 15;
                     break;
                 case 'comet':
-                    obj.baseR = 3 + rBase * 5;
+                    obj.baseR = (3 + rBase * 5) * zFactor;
                     obj.color1 = '#b3e5fc'; obj.color2 = '#0277bd';
-                    obj.vy = 1 + Math.random() * 1.5;
+                    obj.vy = (1 + Math.random() * 1.5) * zFactor;
                     obj.vx = -(0.5 + Math.random() * 0.5);
                     obj.trailLength = 40;
                     break;
                 case 'satellite':
-                    obj.baseR = 10 + rBase * 10;
+                    obj.baseR = (10 + rBase * 10) * zFactor;
                     obj.color1 = '#bdc3c7'; obj.color2 = '#2c3e50';
-                    obj.vy = 0.1 + Math.random() * 0.2; 
+                    obj.vy = (0.1 + Math.random() * 0.2) * zFactor; 
                     obj.vx = 0.05 + Math.random() * 0.1;
                     break;
                 case 'debris':
-                    obj.baseR = 3 + rBase * 6;
+                    obj.baseR = (3 + rBase * 6) * zFactor;
                     obj.color1 = '#7f8c8d'; obj.color2 = '#2c3e50';
-                    obj.vy = 0.5 + Math.random() * 1;
+                    obj.vy = (0.5 + Math.random() * 1) * zFactor;
                     obj.spin = (Math.random() - 0.5) * 0.05;
                     break;
-                case 'ship':
-                    obj.baseR = 8 + rBase * 12;
+                case 'rocket':
+                    obj.baseR = (12 + rBase * 8) * zFactor;
                     obj.color1 = '#ecf0f1'; obj.color2 = '#c0392b';
-                    obj.vy = 1.5 + Math.random() * 1;
-                    obj.vx = 0.2;
+                    obj.vy = -(0.8 + Math.random() * 1.2) * zFactor; // Slower velocity, pointing UP
+                    obj.vx = (Math.random() - 0.5) * 0.2;
+                    obj.angle = 0; 
+                    obj.opacity = 0.4 + (zFactor - 0.5) * 0.6; // Farther = more faded
                     break;
                 case 'station':
-                    obj.baseR = 25 + rBase * 25;
+                    obj.baseR = (25 + rBase * 25) * zFactor;
                     obj.color1 = '#95a5a6'; obj.color2 = '#34495e';
-                    obj.vy = 0.05 + Math.random() * 0.1;
+                    obj.vy = (0.05 + Math.random() * 0.1) * zFactor;
                     obj.angle = Math.PI / 4;
                     break;
             }
@@ -1170,6 +2939,12 @@
         }
 
         function updateSpaceObject(obj, canvas) {
+            // Handle staggered spawn delay
+            if(obj.spawnDelay > 0) {
+                obj.spawnDelay--;
+                return;
+            }
+
             obj.y += obj.vy;
             obj.x += obj.vx;
             obj.angle += obj.spin;
@@ -1179,14 +2954,22 @@
                 if (obj.trail.length > obj.trailLength) obj.trail.shift();
             }
 
-            if (obj.y > canvas.height + 50 || obj.x > canvas.width + 50 || obj.x < -100) {
-                obj.y = -100;
-                obj.x = Math.random() * canvas.width;
-                if (obj.trail) obj.trail = [];
+            // Recycle object based on direction
+            const buffer = 200;
+            if (obj.vy > 0 && obj.y > canvas.height + buffer) {
+                obj.y = -buffer; obj.x = Math.random() * canvas.width;
+            } else if (obj.vy < 0 && obj.y < -buffer) {
+                obj.y = canvas.height + buffer; obj.x = Math.random() * canvas.width;
+            }
+            
+            if (obj.x > canvas.width + buffer || obj.x < -buffer) {
+                obj.x = obj.vx > 0 ? -buffer : canvas.width + buffer;
             }
         }
 
         function drawRealisticObject(ctx, obj) {
+            if(obj.spawnDelay > 0) return;
+
             ctx.globalAlpha = obj.opacity;
             ctx.save();
             ctx.translate(obj.x, obj.y);
@@ -1207,23 +2990,52 @@
                     }
                     ctx.closePath();
                     ctx.fill();
-                    ctx.fillStyle = "rgba(0,0,0,0.3)"; ctx.fill();
                     break;
                 
-                case 'debris':
-                    ctx.fillRect(-obj.baseR, -obj.baseR/2, obj.baseR*1.5, obj.baseR);
-                    ctx.fillStyle = "rgba(255,255,255,0.1)"; ctx.fillRect(-obj.baseR/2, -obj.baseR/4, obj.baseR/2, obj.baseR/2);
-                    break;
-
-                case 'ship':
+                case 'rocket':
+                    // Rocket Body (Flipped Pointing Up)
+                    ctx.fillStyle = '#ecf0f1';
                     ctx.beginPath();
-                    ctx.moveTo(0, -obj.baseR*1.5);
-                    ctx.lineTo(obj.baseR/2, obj.baseR);
-                    ctx.lineTo(0, obj.baseR/2);
-                    ctx.lineTo(-obj.baseR/2, obj.baseR);
+                    ctx.moveTo(0, -obj.baseR*1.5); // Nose (Top)
+                    ctx.lineTo(obj.baseR/2.5, -obj.baseR/2);
+                    ctx.lineTo(obj.baseR/2.5, obj.baseR/2); // Body right
+                    ctx.lineTo(-obj.baseR/2.5, obj.baseR/2); // Body left
+                    ctx.lineTo(-obj.baseR/2.5, -obj.baseR/2);
                     ctx.closePath();
                     ctx.fill();
-                    ctx.fillStyle = obj.color2; ctx.fillRect(-obj.baseR/4, -obj.baseR/2, obj.baseR/2, obj.baseR/4);
+                    
+                    // Fins (At the bottom)
+                    ctx.fillStyle = '#c0392b';
+                    ctx.beginPath();
+                    ctx.moveTo(obj.baseR/2.5, 0);
+                    ctx.lineTo(obj.baseR, obj.baseR);
+                    ctx.lineTo(obj.baseR/2.5, obj.baseR/2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.moveTo(-obj.baseR/2.5, 0);
+                    ctx.lineTo(-obj.baseR, obj.baseR);
+                    ctx.lineTo(-obj.baseR/2.5, obj.baseR/2);
+                    ctx.fill();
+
+                    // Flame (At the bottom)
+                    const flicker = Math.random() * 15 * obj.zFactor;
+                    const flameLen = (obj.baseR * 4 + flicker);
+                    let fGrad = ctx.createLinearGradient(0, obj.baseR/2, 0, obj.baseR/2 + flameLen);
+                    fGrad.addColorStop(0, '#fff');
+                    fGrad.addColorStop(0.2, '#ffeb3b');
+                    fGrad.addColorStop(0.5, '#f44336');
+                    fGrad.addColorStop(1, 'transparent');
+                    
+                    ctx.fillStyle = fGrad;
+                    ctx.beginPath();
+                    ctx.moveTo(-obj.baseR/4, obj.baseR/2);
+                    ctx.quadraticCurveTo(0, obj.baseR/2 + flameLen * 1.2, obj.baseR/4, obj.baseR/2);
+                    ctx.fill();
+
+                    // Glow effect for deeper rockets
+                    ctx.shadowBlur = 15 * obj.zFactor;
+                    ctx.shadowColor = "#ff9800";
+                    ctx.fill();
                     break;
 
                 case 'satellite':
@@ -1238,8 +3050,6 @@
                 case 'station':
                     ctx.fillStyle = obj.color1;
                     ctx.fillRect(-obj.baseR/2, -obj.baseR/2, obj.baseR, obj.baseR);
-                    ctx.fillStyle = "#fff";
-                    ctx.fillRect(-obj.baseR/4, -obj.baseR/4, 2, 2); ctx.fillRect(0, -obj.baseR/4, 2, 2); ctx.fillRect(obj.baseR/4, -obj.baseR/4, 2, 2);
                     ctx.fillStyle = obj.color2; 
                     ctx.fillRect(-obj.baseR, -obj.baseR/10, obj.baseR*2, obj.baseR/5);
                     ctx.fillRect(-obj.baseR/10, -obj.baseR, obj.baseR/5, obj.baseR*2);
@@ -1253,17 +3063,14 @@
                             const p1 = obj.trail[t];
                             const p2 = obj.trail[t+1];
                             const pct = t / obj.trail.length;
-                            
                             ctx.beginPath();
                             ctx.moveTo(p1.x, p1.y);
                             ctx.lineTo(p2.x, p2.y);
                             ctx.lineWidth = obj.baseR * pct * (obj.type === 'comet' ? 3 : 1);
-                            
                             let tGrad = ctx.createLinearGradient(p1.x, p1.y, p2.x, p2.y);
                             tGrad.addColorStop(0, "rgba(0,0,0,0)");
                             tGrad.addColorStop(1, obj.color2);
                             ctx.strokeStyle = tGrad;
-                            
                             ctx.globalAlpha = obj.opacity * pct;
                             ctx.stroke();
                         }
@@ -1273,7 +3080,6 @@
                     ctx.beginPath();
                     ctx.arc(0, 0, obj.baseR, 0, Math.PI * 2);
                     ctx.fillStyle = obj.color1;
-                    ctx.globalAlpha = obj.opacity;
                     ctx.fill();
                     break;
             }
@@ -1306,6 +3112,130 @@
             fr.submit(); 
             fr.remove(); 
         }
-    </script>
+        
+        /* GLOBAL CLICK SOUND */
+const clickSound = new Audio(
+  "https://file.garden/afIEksSC83E7LKis/universfield-computer-mouse-click-351398.mp3"
+);
+
+clickSound.volume = 0.45;
+
+/* PLAY SOUND ON EVERY CLICKABLE ELEMENT */
+document.addEventListener("click", (e) => {
+
+  const el = e.target.closest(
+    "button, a, img, .clickable, .try-password-btn, #tryPasswordBtn"
+  );
+
+  if (!el) return;
+
+  clickSound.currentTime = 0;
+
+  clickSound.play().catch(() => {});
+});
+
+const btn = document.getElementById("cinema");
+const gallery = document.getElementById("cinema-gallery");
+const overlay = document.querySelector(".cinema-transition");
+
+if (btn) {
+  btn.addEventListener("click", () => {
+
+    const whoosh = new Audio(
+      "https://file.garden/afIEksSC83E7LKis/dragon-studio-dramatic-whoosh-swing-487667.mp3"
+    );
+
+    whoosh.currentTime = 0;
+    whoosh.volume = 0.6;
+    whoosh.play().catch(() => {});
+
+    document.body.classList.add("cinema-open");
+
+    if (overlay) {
+      setTimeout(() => {
+        overlay.style.opacity = "1";
+      }, 150);
+
+      setTimeout(() => {
+        overlay.style.filter = "brightness(1.2)";
+      }, 350);
+    }
+
+    if (gallery) {
+      setTimeout(() => {
+        gallery.style.opacity = "1";
+        gallery.style.visibility = "visible";
+      }, 900);
+    }
+
+  });
+}
+        
+        /* --- FINAL REFINED OUTRO --- */
+function setupOutroObserver() {
+    const outroCont = document.getElementById('final-outro-container');
+    if (!outroCont) return;
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            // Trigger lang kung 60% ng outro container ay kita na sa scroll
+            if (entry.isIntersecting) {
+                console.log("Outro Target Reached");
+                const msg = document.getElementById('final-message');
+                if (msg) {
+                    msg.style.pointerEvents = "auto"; // Pwede na ma-interact kung kailangan
+                    msg.style.opacity = "1";
+                }
+
+                setTimeout(() => {
+                    executeUniverseCollapse();
+                }, 5000);
+
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.6 });
+
+    observer.observe(outroCont);
+}
+
+function executeUniverseCollapse() {
+    const sing = document.getElementById('singularity');
+    const flash = document.getElementById('white-out-explosion');
+    const msg = document.getElementById('final-message');
+
+    if (sing) {
+        sing.style.opacity = "1";
+        sing.style.transform = "translate(-50%, -50%) scale(1)";
+    }
+
+    // Higupin lahat (Gallery, transitions, etc.)
+    // Idagdag dito ang lahat ng main IDs/Classes na ginamit mo sa code
+    const toCollapse = document.querySelectorAll('.cinema-item, .cinema-transition, #cinema-gallery, .stars-container, header, footer, #final-message');
+    toCollapse.forEach(el => el.classList.add('collapse-all'));
+
+    setTimeout(() => {
+        if (flash) flash.classList.add('big-bang-flash');
+        
+        setTimeout(() => {
+            if (msg) {
+                msg.classList.remove('collapse-all');
+                msg.style.opacity = "0";
+                setTimeout(() => {
+                    msg.innerHTML = "<h1 style='color:white; font-family:\"Dancing Script\", cursive; font-size: 3.5rem; text-shadow: 0 0 30px white;'>To my greatest love, always and forever.</h1>";
+                    msg.style.opacity = "1";
+                    if (sing) sing.style.opacity = "0";
+                }, 500);
+            }
+        }, 500);
+    }, 3500);
+}
+
+// Siguraduhin na hindi sasabay sa load ng gallery button
+window.addEventListener('load', () => {
+    setTimeout(setupOutroObserver, 3000); 
+});
+
+    </script> 
 </body>
 </html>
