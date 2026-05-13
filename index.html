@@ -1223,38 +1223,35 @@ canvas {
     z-index: 100 !important;
 }
 
+/* I-hide muna ang Fiona message container */
 #final-outro-container {
-    min-height: 100vh;
+    min-height: 100vh; /* Isang buong screen na space sa ilalim */
     display: flex;
     justify-content: center;
     align-items: center;
     position: relative;
-    z-index: 1; /* Mababa lang muna */
     background: transparent;
-    pointer-events: none; /* Hindi makakaharang sa click */
+    opacity: 1; /* Hayaan itong naka-display para ma-scroll */
 }
 
 #final-message {
-    opacity: 0;
-    transition: opacity 2s ease-in-out;
+    opacity: 0; /* Pero ang text ay nakatago muna */
+    transition: opacity 3s ease-in-out;
     text-align: center;
-    padding: 40px;
-    color: white;
-    z-index: 101;
+    padding: 20px;
 }
 
 #singularity {
+    position: fixed;
+    top: 50%;
+    left: 50%;
     width: 6px;
     height: 6px;
     background: white;
     border-radius: 50%;
-    position: fixed;
-    top: 50%;
-    left: 50%;
     transform: translate(-50%, -50%) scale(0);
-    box-shadow: 0 0 30px 10px white;
     opacity: 0;
-    z-index: 9998; 
+    z-index: 9998;
     pointer-events: none;
 }
 
@@ -1281,13 +1278,25 @@ canvas {
 }
 
 .big-bang-flash {
-    animation: flashOut 5s forwards;
+    animation: flashOut 4s forwards;
 }
 
 @keyframes flashOut {
     0% { opacity: 0; }
-    20% { opacity: 1; }
+    25% { opacity: 1; }
     100% { opacity: 0; }
+}
+
+/* Siguraduhin na ang text ay lilitaw sa pinaka-ibabaw ng kahit ano */
+#final-message h1 {
+    pointer-events: none;
+    user-select: none;
+    z-index: 10000 !important;
+}
+
+/* Para hindi mag-conflict sa flash */
+#white-out-explosion {
+    pointer-events: none;
 }
 
 
@@ -1459,7 +1468,7 @@ canvas {
 
 <section id="final-outro-container">
     <div id="final-message">
-        <p class="glow-text" style="font-family: 'Indie Flower', cursive; font-size: 2.6rem; line-height: 1.6; max-width: 600px; margin: 0 auto; color: white;">
+        <p class="glow-text" style="font-family: 'Indie Flower', cursive; font-size: 2.5rem; line-height: 1.6; max-width: 600px; margin: 0 auto; color: white;">
             “Maybe in a different time, in a place a little kinder, our paths will cross again. If not, I still hope life leads you somewhere soft, somewhere you’re meant to be found. I love you always.”
         </p>
     </div>
@@ -3171,70 +3180,96 @@ if (btn) {
   });
 }
         
-        /* --- FINAL REFINED OUTRO --- */
-function setupOutroObserver() {
-    const outroCont = document.getElementById('final-outro-container');
-    if (!outroCont) return;
+        /* --- AUTOMATIC SCROLL TRIGGER LOGIC --- */
 
+function initAutomaticOutro() {
+    // Binabantayan ang "This is the only gift..." part
+    const cinemaEnd = document.getElementById("cinema-end");
+    
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-            // Trigger lang kung 60% ng outro container ay kita na sa scroll
             if (entry.isIntersecting) {
-                console.log("Outro Target Reached");
-                const msg = document.getElementById('final-message');
-                if (msg) {
-                    msg.style.pointerEvents = "auto"; // Pwede na ma-interact kung kailangan
-                    msg.style.opacity = "1";
-                }
-
+                // Nakita na ang "This is the only gift..."
+                
+                // Maghihintay ng 6 seconds bago ilabas ang huling message ni Fiona
                 setTimeout(() => {
-                    executeUniverseCollapse();
-                }, 5000);
+                    const finalMsg = document.getElementById('final-message');
+                    if (finalMsg) {
+                        finalMsg.style.opacity = "1";
+                        
+                        // Opsyonal: Dahan-dahang i-scroll pababa para makita ang message
+                        finalMsg.scrollIntoView({ behavior: 'smooth' });
+                    }
+
+                    // Pagkalitaw ng message, bigyan ng 10 seconds bago gunawin ang universe
+                    setTimeout(() => {
+                        startUniverseCollapse();
+                    }, 10000);
+
+                }, 6000); // 6 seconds delay matapos ma-scroll sa dulo
 
                 observer.unobserve(entry.target);
             }
         });
-    }, { threshold: 0.6 });
+    }, { threshold: 0.8 });
 
-    observer.observe(outroCont);
+    if (cinemaEnd) observer.observe(cinemaEnd);
 }
 
-function executeUniverseCollapse() {
-    const sing = document.getElementById('singularity');
-    const flash = document.getElementById('white-out-explosion');
-    const msg = document.getElementById('final-message');
+function startUniverseCollapse() {
+    const sing = document.getElementById("singularity");
+    const flash = document.getElementById("white-out-explosion");
+    const msgContainer = document.getElementById("final-message");
 
+    // 1. Ipakita ang Singularity
     if (sing) {
         sing.style.opacity = "1";
         sing.style.transform = "translate(-50%, -50%) scale(1)";
+        sing.style.transition = "transform 2.5s ease-in";
     }
 
-    // Higupin lahat (Gallery, transitions, etc.)
-    // Idagdag dito ang lahat ng main IDs/Classes na ginamit mo sa code
-    const toCollapse = document.querySelectorAll('.cinema-item, .cinema-transition, #cinema-gallery, .stars-container, header, footer, #final-message');
-    toCollapse.forEach(el => el.classList.add('collapse-all'));
+    // 2. Higupin ang lahat EXCEPT ang message container para hindi siya mawala sa DOM
+    const elements = document.querySelectorAll("#cinema-gallery, .stars-container, .cinema-transition, #cinema-end, header, footer");
+    elements.forEach(el => el.classList.add('collapse-all'));
 
+    // Idagdag din ang collapse sa message temporarily para sumama sa "higop" effect
+    if (msgContainer) msgContainer.classList.add('collapse-all');
+
+    // 3. Sabog (White Out)
     setTimeout(() => {
-        if (flash) flash.classList.add('big-bang-flash');
-        
+        if (flash) {
+            flash.classList.add('big-bang-flash');
+        }
+
+        // DITO ANG MAGIC: Habang maputi ang screen, i-reset natin ang message
         setTimeout(() => {
-            if (msg) {
-                msg.classList.remove('collapse-all');
-                msg.style.opacity = "0";
+            if (msgContainer) {
+                // Alisin ang pagkakahigop sa kanya
+                msgContainer.classList.remove('collapse-all');
+                msgContainer.style.opacity = "0"; 
+                msgContainer.style.transform = "scale(1)"; // Ibalik sa dating laki
+                
+                // Palitan ang content
+                msgContainer.innerHTML = `<h1 style="color:white; font-family:'Dancing Script', cursive; font-size: 4.5rem; text-shadow: 0 0 40px rgba(255,255,255,0.9); margin:0;">To my greatest love, Always & Forever.</h1>`;
+                
+                // Dahan-dahang ipakita sa gitna ng dilim
                 setTimeout(() => {
-                    msg.innerHTML = "<h1 style='color:white; font-family:\"Dancing Script\", cursive; font-size: 4.5rem; text-shadow: 0 0 30px white;'>To my greatest love, always and forever.</h1>";
-                    msg.style.opacity = "1";
-                    if (sing) sing.style.opacity = "0";
-                }, 500);
+                    msgContainer.style.opacity = "1";
+                    if (sing) sing.style.opacity = "0"; // Itago na ang dot
+                }, 800); // Konting gap para madrama
             }
-        }, 500);
-    }, 3500);
+        }, 1000); // Mangyayari habang peak ng white flash
+
+    }, 6000); // Pagkatapos ng 6s na paghigop
 }
 
-// Siguraduhin na hindi sasabay sa load ng gallery button
-window.addEventListener('load', () => {
-    setTimeout(setupOutroObserver, 7000); 
-});
+
+// Siguraduhin na tatakbo ang observer pagkabukas ng gallery
+// Hanapin ang iyong existing gallery open code at isingit ito:
+// window.addEventListener('load', initAutomaticOutro); o kaya sa loob ng gallery button logic.
+initAutomaticOutro();
+
+
 
     </script> 
 </body>
